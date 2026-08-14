@@ -1038,7 +1038,7 @@ svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
 </div>
 
 <script>
-// ===== EMBEDDED SAMPLE DATA (from EPOSNow Stock Warnings, Colne location, 289 items, 14 Aug 2026) =====
+// ===== EMBEDDED SAMPLE DATA (from EPOSNow Stock Warnings, Colne location, 250 items, 14 Aug 2026) =====
 const SAMPLE_CSV = `Name,Barcode,Category,Brand,Supplier,CurrentStock,MinStock,MaxStock,OnOrder,Reorder
 Boys Blk Adjustable Pull Up Trs 24 Age 4-5 Yrs,1000002951,Adj Pullup Skiny Trs Blk,Unitex,Deans Schoolwear,0,2,2,0,2
 Boys Blk Adjustable Pull Up Trs 26 Age 5-6 Yrs,1000002953,Adj Pullup Skiny Trs Blk,Unitex,Deans Schoolwear,1,2,2,0,1
@@ -1056,7 +1056,6 @@ Air Supreme Girls Backpack Petrol D396,3960000001,Air Supreme Backpack,,,0,1,1,0
 3 x Ankle Bow Socks Black 4-6.5,1000003223,Ankle Bow Scks Blk 3P,,Boston Billy Red Sox,1,2,2,0,1
 3 x Ankle Bow Socks Grey 6-8,1000005248,Ankle Bow Scks Gry 3P,,Boston Billy Red Sox,1,2,2,0,1
 3 x Ankle Crazy Fril Socks Blk 4-6,1000002573,Ankle Crazzy Frill Socks,Wicked Nights,Boston Billy Red Sox,0,2,2,0,2
-3 x Ankle Crazy Fril Socks Wht 12.5-3.5,1000002581,Ankle Crazzy Frill Socks,Wicked Nights,Boston Billy Red Sox,1,2,2,0,1
 3 x Ankle Crazy Fril Socks Wht 9-12,1000002580,Ankle Crazzy Frill Socks,Wicked Nights,Boston Billy Red Sox,1,2,2,0,1
 3 x Ankle Socks Grey 9-12 (27-30),1000006244,Ankle Scks Gry 3P,Fresh Feel,Boston Billy Red Sox,6,8,8,0,2
 3 x Ankle Socks Navy 9-12 (27-30),1000008756,Ankle Scks Nvy 3P,Fresh Feel,Boston Billy Red Sox,2,3,3,0,1
@@ -1065,6 +1064,7 @@ Black Boys Adj Zip & Clip Trouser 14 Yrs,1000002595,Black Boys Adjustable Trouse
 Black Boys Adj Zip & Clip Trouser 15-16 Yrs,1000009914,Black Boys Adjustable Trouser,Jean Junction,Jean Junction Limited,0,2,2,0,2
 Black Boys Adj Zip & Clip Trouser 7-8 Yrs,1000009908,Black Boys Adjustable Trouser,Jean Junction,Jean Junction Limited,0,2,2,0,2
 Black Coin Pocket Girls Trouser Age 3-4,1000006983,Black Coin Pkt Girls Trs Ages,Deans,,1,2,2,0,1
+Black Coin Pocket Girls Trouser W28 S28,1000007005,Black Coin Pkt Girls Trs S,Deans,,0,1,1,0,1
 Black Box Pleat Skirt Age 9-10 Years,1000005371,Box Pleat Skirt Blk,,Deans Schoolwear,1,2,2,0,1
 Black Britney Skirt 18 W36-L18,1000001712,Britney Skirt Black,,High Standard Ltd,0,1,1,0,1
 Black Britney Skirt 20 W38-L19,1000001713,Britney Skirt Black,,High Standard Ltd,0,1,1,0,1
@@ -1083,63 +1083,45 @@ CPA Cotton Jumper 13-14 Yr,1000007806,CPA 100% Cotton Jumper,,Barkat Knitwear Ma
 CPA Boys Adjustable Trouser 15-16 Yrs,1000005744,CPA Boys Adjustable Trouser,,,1,3,3,0,2
 CPA Boys Adjustable Trouser 8-9 Yrs,1000005737,CPA Boys Adjustable Trouser,,,0,1,1,0,1
 CPA Boys Blazer 28 Chest,5059467431679,CPA Boys Blazer,Trutex,Uniwears,0,1,1,0,1
-CPA Girls Skorts 26,1000001181,CPA Girls Skorts,,Smart Clothing Limited,2,3,3,0,1
-"CPA Knitted Jumper Size 34""",1000001646,CPA Knitted Jumper,,Barkat Knitwear Manufactuing,2,3,3,0,1
 "CPA Knitted Jumper Size 46""",1000004096,CPA Knitted Jumper,,Barkat Knitwear Manufactuing,0,1,1,0,1
 "CPA Knitted Jumper Size 48""",1000004097,CPA Knitted Jumper,,Barkat Knitwear Manufactuing,0,1,1,0,1
 CPA Acad Tie Pegasus-Blue Year 9,1000001212,CPA Official Tie,Naeem,Rehman Ties Center,9,10,10,0,1
 CPA Tie Lacerta-Green Year 8,1000001213,CPA Official Tie,Naeem,Rehman Ties Center,1,10,10,0,9
-CPA Pe T-Shirt 30/32,1000009042,CPA Pe T-Shirt,Unitex,,2,3,3,0,1
 CPA Waistless Adjustable Skirt W28-L16,1000007789,CPA Skirt L16,,Smart Clothing Limited,1,3,3,0,2
 CPA Waistless Adjustable Skirt W32-L16,1000007791,CPA Skirt L16,,Smart Clothing Limited,1,2,2,0,1
 CPA Waistless Adjustable Skirt W22-L18,1000007792,CPA Skirt L18,,Smart Clothing Limited,0,1,1,0,1
 CPA Waistless Adjustable Skirt W26-L18,1000005544,CPA Skirt L18,,Smart Clothing Limited,2,3,3,0,1
-CPA Waistless Adjustable Skirt W28-L18,1000005547,CPA Skirt L18,,Smart Clothing Limited,2,3,3,0,1
 CPA Waistless Adjustable Skirt W40-L18,1000001681,CPA Skirt L18,,Smart Clothing Limited,0,1,1,0,1
 CPA Slim Fit Trouser Grey 38 R,1000001183,CPA Slim Fit Trs R,,Winterbottom,1,2,2,0,1
 CPA Slim Fit Trouser Grey 30 S,1000001166,CPA Slim Fit Trs S,,Winterbottom,0,2,2,0,2
 CPA Slim Fit Trouser Grey 40 S,1000001186,CPA Slim Fit Trs S,,Winterbottom,0,1,1,0,1
 CPA SSS Girls Grey Trouser 15-16,1000007732,CPA SSS Ladies Grey Trouser,,,2,3,3,0,1
 CPA Tracksuit 50-52 R,1000009177,CPA Tracky Bottm R,Unitex,Smart Clothing Limited,0,1,1,0,1
-CPA 1/4 Zip Training Top 42/44,5056213429904,CPA Training Zip Top,Unitex,,1,2,2,0,1
 CPA Boys Unitex Elastic Trs 30 7-8 Yrs,1000005067,CPA Unitex Trouser Boys,Unitex,Smart Clothing Limited,0,1,1,0,1
 70 Denier Leg Apparel Tights Blk S/M,1000006359,Denier Tights 70,,,2,3,3,0,1
-Dri Fit Cool T-Shirt Yellow Age 7-8,1000001660,Dri Fit T-Shirt Yellow,Just Cool JC001B,Prestige,0,1,1,0,1
 Black Football Socks 4-6 Youths,5055780901929,Fb Socks Blk,,1st Impressions Manchester Limited,4,10,10,0,6
 Black Football Socks12.5-3.5 Kids,5055780901974,Fb Socks Blk,,1st Impressions Manchester Limited,3,6,6,0,3
-"Fishermore FM Girls Skorts 24""",1000007695,Fishermore Girls Skorts,Unitex,Smart Clothing Limited,1,3,3,0,2
-"Fishermore FM Girls Skorts 26""",1000007696,Fishermore Girls Skorts,Unitex,Smart Clothing Limited,2,3,3,0,1
-Fishermore FM T-Shirt 28/30,1000009190,Fishermore Pe Top,Unitex,Smart Clothing Limited,0,2,2,0,2
-Fishermore FM T-Shirt 30/32,1000007716,Fishermore Pe Top,Unitex,Smart Clothing Limited,1,3,3,0,2
-Fishermore FM T-Shirt 38/40,1000007719,Fishermore Pe Top,Unitex,Smart Clothing Limited,2,3,3,0,1
-"Fishermore FM PE Shorts 26-28""",1000008317,Fishermore Shorts,Unitex,Smart Clothing Limited,1,2,2,0,1
-"Fishermore FM PE Shorts 30-32""",1000007701,Fishermore Shorts,Unitex,Smart Clothing Limited,0,3,3,0,3
-"Fishermore FM PE Shorts 34-36""",1000007702,Fishermore Shorts,Unitex,Smart Clothing Limited,2,3,3,0,1
+"Fishermore FM Girls Skorts 32""",1000007699,Fishermore Girls Skorts,Unitex,Smart Clothing Limited,1,2,2,0,1
+Fishermore FM T-Shirt 34/36,1000007718,Fishermore Pe Top,Unitex,Smart Clothing Limited,2,3,3,0,1
 Fishermore Tie St Andrew Purple,1000008285,Fishermore Ties,,,9,10,10,0,1
-FM 1/4 Zip Training Top 30/32,1000007708,Fishermore Training Zip Top,Unitex,Smart Clothing Limited,2,3,3,0,1
-FM 1/4 Zip Training Top 38/40,1000007710,Fishermore Training Zip Top,Unitex,Smart Clothing Limited,2,3,3,0,1
-FM Boys Adjustable Trouser 13 Yrs,1000009011,FM Boys Adjustable Trouser,,,-3,3,3,0,6
 FM Boys Adjustable Trouser 14 Yrs,1000002214,FM Boys Adjustable Trouser,,,2,3,3,0,1
 FM Boys Adjustable Trouser 15-16 Yrs,1000009012,FM Boys Adjustable Trouser,,,0,3,3,0,3
 FM Boys Adjustable Trouser 8-9 Yrs,1000009007,FM Boys Adjustable Trouser,,,0,2,2,0,2
 "Fishermore Boys Blazer Purple 29""",1000000890,FM Boys Blazer,Unitex,Smart Clothing Limited,0,2,2,0,2
-"Fishermore Boys Blazer Purple 30""",1000000891,FM Boys Blazer,Unitex,Smart Clothing Limited,1,3,3,0,2
-"Fishermore Boys Blazer Purple 31""",1000000892,FM Boys Blazer,Unitex,Smart Clothing Limited,1,3,3,0,2
-"Fishermore Boys Blazer Purple 35""",1000000896,FM Boys Blazer,Unitex,Smart Clothing Limited,1,3,3,0,2
+"Fishermore Boys Blazer Purple 30""",1000000891,FM Boys Blazer,Unitex,Smart Clothing Limited,2,3,3,0,1
+"Fishermore Boys Blazer Purple 31""",1000000892,FM Boys Blazer,Unitex,Smart Clothing Limited,2,3,3,0,1
 "Fishermore Boys Blazer Purple 37""",1000000898,FM Boys Blazer,Unitex,Smart Clothing Limited,1,2,2,0,1
 "Fishermore Boys Blazer Purple 39""",1000000900,FM Boys Blazer,Unitex,Smart Clothing Limited,0,2,2,0,2
 "Fishermore Girls Blazer Purple 28""",1000000798,FM Girls Blazer,Unitex,Smart Clothing Limited,0,1,1,0,1
 "Fishermore Girls Blazer Purple 29""",1000000799,FM Girls Blazer,Unitex,Smart Clothing Limited,0,2,2,0,2
 "Fishermore Girls Blazer Purple 30""",1000000800,FM Girls Blazer,Unitex,Smart Clothing Limited,2,3,3,0,1
 "Fishermore Girls Blazer Purple 42""",1000000812,FM Girls Blazer,Unitex,Smart Clothing Limited,0,2,2,0,2
-"Fishermore Knitted Jumper 34""",1000009919,FM Knitted Jumpers,,Lex KnitWear Ltd,2,4,4,0,2
 Fishermore Slim Fit Trouser Grey 30 L,1000007870,FM Slim Fit Trs L,,Winterbottom,0,2,2,0,2
 Fishermore Slim Fit Trouser Grey 34 L,1000007876,FM Slim Fit Trs L,,Winterbottom,1,2,2,0,1
 Fishermore Slim Fit Trouser Grey 30 S,1000007868,FM Slim Fit Trs S,,Winterbottom,1,2,2,0,1
 Fishermore Slim Fit Trouser Grey 32 S,1000007871,FM Slim Fit Trs S,,Winterbottom,0,2,2,0,2
 Fishermore Slim Fit Trouser Grey 34 S,1000007874,FM Slim Fit Trs S,,Winterbottom,0,2,2,0,2
 Fishermore Tartan Skirt W22-L16,1000008609,FM Tartan Skirt L16,,High Standard Ltd,0,2,2,0,2
-Fishermore Tartan Skirt W24-L16,1000007997,FM Tartan Skirt L16,,High Standard Ltd,0,3,3,0,3
 Fishermore Tartan Skirt W30-L16,1000008610,FM Tartan Skirt L16,,High Standard Ltd,2,3,3,0,1
 Fishermore Tartan Skirt W32-L16,1000008611,FM Tartan Skirt L16,,High Standard Ltd,0,2,2,0,2
 Fishermore Tartan Skirt W32-L18,1000008008,FM Tartan Skirt L18,,High Standard Ltd,1,2,2,0,1
@@ -1164,10 +1146,6 @@ Gisburn Road Primary Cardigan 9-10 Yr,1000006773,Gisburn Road Primary Cardigan ,
 Grey Boys Adjustable Trouser 14 Yrs,1000002599,Grey Boys Adjustable Trouser,,,0,2,2,0,2
 Grey Boys Adjustable Trouser 15-16 Yrs,1000009401,Grey Boys Adjustable Trouser,,,0,2,2,0,2
 Grey Boys Adjustable Trouser 7-8 Yrs,1000009395,Grey Boys Adjustable Trouser,,,1,2,2,0,1
-Holy Saviour Primary Fleece Jacket 9-10,1000000354,Holy Saviour Fleece Jkt,,Sportex,0,1,1,0,1
-Holy Saviour Primary PE T-Shirt 9-11,1000000389,Holy Saviour Primary Pe T-Shirt,Fruit of the Loom,Prestige,0,1,1,0,1
-Holy Saviour RC Sweatshirt 5-6 Yr,1000000365,Holy Saviour Primary Sweatshirt,,Smart Clothing Limited,1,2,2,0,1
-Batman Infant Backpack,5060569229255,Infant Backpack,,,-1,0,0,0,1
 3 x Knee High Bow Socks Black 12.5-3.5,1000006327,Knee High Bow Scks Blk 3P,,Boston Billy Red Sox,2,4,4,0,2
 3 x Knee High Bow Socks Black 4-6,1000006328,Knee High Bow Scks Blk 3P,,Boston Billy Red Sox,1,4,4,0,3
 3 x Knee High Bow Socks Black 6-8,1000006325,Knee High Bow Scks Blk 3P,,Boston Billy Red Sox,0,2,2,0,2
@@ -1192,9 +1170,11 @@ Lord St Primary Hoodie 5-6 Years,1000000866,Lord St Primary Hoodie,,,1,2,2,0,1
 Lord St Primary Hoodie 9-11 Years,1000000868,Lord St Primary Hoodie,,,1,2,2,0,1
 Lord Street Tartan Pinafore 11-12,1000000159,Lord Street Tartan Pinafore Dress,,High Standard Ltd,2,3,3,0,1
 Lord Street Tartan Pinafore 3-4,1000000152,Lord Street Tartan Pinafore Dress,,High Standard Ltd,2,3,3,0,1
+Lord Street Tartan Pinafore 6-7,1000000155,Lord Street Tartan Pinafore Dress,,High Standard Ltd,2,3,3,0,1
 Lord Street Tartan Pinafore 7-8,1000000156,Lord Street Tartan Pinafore Dress,,High Standard Ltd,1,3,3,0,2
 Lord Street Tartan Skirt Age 17-18 Yrs,1000005484,Lord Street Tartan Skirts,,High Standard Ltd,0,1,1,0,1
 Lord Street Tartan Skirt Age 3-4 Yrs,1000003679,Lord Street Tartan Skirts,,High Standard Ltd,2,3,3,0,1
+Lord Street Tartan Skirt Age 6-7 Yrs,1000003681,Lord Street Tartan Skirts,,High Standard Ltd,2,3,3,0,1
 Modsty Pe Lycra Short Black 2XL 10-12 Ldy,1000006946,Modsty Pe Black Shorts,,,0,2,2,0,2
 Modsty Pe Lycra Short Black 3XL 12-16 Ldy,1000006947,Modsty Pe Black Shorts,,,0,2,2,0,2
 Modsty Pe Lycra Short Black S 5-7,1000006942,Modsty Pe Black Shorts,,,0,2,2,0,2
@@ -1205,51 +1185,36 @@ New Newtown Nursery Fleece Jacket 5-6,1000001871,New Newtown Fleece Jkt,,Sportex
 Bamboo Over The Knee Socks Black 4-7,5055780901455,Over The Knee Scks Blk,,SSS Manchester LTD,0,6,6,0,6
 Bamboo Over The Knee Socks Grey 4-7,5055780901479,Over The Knee Scks Gry,,SSS Manchester LTD,1,6,6,0,5
 "Park High Boys Blazer Green 30""",5059467223526,Park High Boys Blazer ,Trutex,,0,1,1,0,1
-"Park High Boys Blazer Green 33""",5059467223557,Park High Boys Blazer ,Trutex,,1,2,2,0,1
-"Park High Boys Blazer Green 36""",5059467223588,Park High Boys Blazer ,Trutex,,2,3,3,0,1
-"Park High Boys Blazer Green 37""",1000000955,Park High Boys Blazer ,Trutex,,0,1,1,0,1
-Park High Boys Polo Top 30/32,1000004199,Park High Boys PE Top,,Suhaib Embroidery,2,3,3,0,1
-Park High Boys Polo Top 34/36,1000004201,Park High Boys PE Top,,Suhaib Embroidery,1,3,3,0,2
-Park High Boys Polo Top 38/40,1000004203,Park High Boys PE Top,,Suhaib Embroidery,2,3,3,0,1
-"Park High Girls Blazer Green 29""",1000000963,Park High Girls Blazer ,Trutex,,0,1,1,0,1
 "Park High Girls Blazer Green 30""",5059467225360,Park High Girls Blazer ,Trutex,,1,2,2,0,1
 "Park High Girls Blazer Green 34""",5059467225407,Park High Girls Blazer ,Trutex,,1,2,2,0,1
 Park High Girls PE V Top 28-30,1000004192,Park High Girls PE Top,,Suhaib Embroidery,0,2,2,0,2
-Park High Girls PE V Top 34-36,1000004193,Park High Girls PE Top,,Suhaib Embroidery,2,3,3,0,1
-Park High Knitted Jumper 36,1000008393,Park High Knitted Jumper,,Unique Clothing Manchester Ltd,3,4,4,0,1
-Park High Football Shorts 30-32,1000004073,Park High Shorts,,Suhaib Embroidery,2,3,3,0,1
-Park High Football Shorts 34-36,1000004074,Park High Shorts,,Suhaib Embroidery,1,3,3,0,2
 Park High Football Shorts 42-44,1000004077,Park High Shorts,,Suhaib Embroidery,1,2,2,0,1
-"Park High Girls Skorts 30""",1000004067,Park High Skorts,,Suhaib Embroidery,2,3,3,0,1
-Park High Tartan Skirt 26W-16L,1000004225,Park High Tartan Skirt L16,,Whittakers Schoolwear,1,3,3,0,2
+Park High Football Shorts 46-48,1000004079,Park High Shorts,,Suhaib Embroidery,0,1,1,0,1
 Park High Tartan Skirt 38W-18L,1000005379,Park High Tartan Skirt L18,,Whittakers Schoolwear,0,1,1,0,1
-Park High Tie Dragon Green,1000004083,Park High Tie,,,9,10,10,0,1
+Park High Tie Dragon Green,1000004083,Park High Tie,,,8,10,10,0,2
 Park High Tie Grey Senior,1000004084,Park High Tie,,,9,10,10,0,1
 Park High Tie Griffin Yellow,1000004081,Park High Tie,,,8,10,10,0,2
 Park High Tie Phoenix Red,1000004080,Park High Tie,,,9,10,10,0,1
 Park Primary Pe Sport T-Shirt 3-4,1000007745,Park Primary Pe T-Shirt,,,-1,0,0,0,1
-Park-Christ-Roughle Tartan-Pini 2-3 Yrs,1000000127,Park-Christ C-Roughlee Tartan Pinafore,,High Standard Ltd,0,2,2,0,2
-Park-Christ-Roughle Tartan-Pini 4-5 Yrs,1000000129,Park-Christ C-Roughlee Tartan Pinafore,,High Standard Ltd,2,3,3,0,1
 Park-Christ-Roughle Tartan Skirt H/W 15-16,1000004678,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,1,2,2,0,1
 Park-Christ-Roughle Tartan Skirt H/W 2-3,1000004668,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,1,2,2,0,1
-Park-Christ-Roughle Tartan Skirt H/W 3-4,1000004669,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,1,2,2,0,1
-Park-Christ-Roughle Tartan Skirt H/W 4-5,1000004670,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,0,2,2,0,2
-Park-Christ-Roughle Tartan Skirt H/W 7-8,1000004673,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,2,3,3,0,1
+Park-Christ-Roughle Tartan Skirt H/W 3-4,1000004669,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,0,2,2,0,2
+Park-Christ-Roughle Tartan Skirt H/W 4-5,1000004670,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,1,2,2,0,1
 Park-Christ-Roughle Tartan Skirt H/W 8-9,1000004674,Park-Christ C-Roughlee Tartan Skirts,,High Standard Ltd,0,3,3,0,3
 PCC Pull Up Hoodie KS5 Sapphire Medium,5305241333,PCC Pull Up Hoodie KS5 Sapphire,AWD,Ralawise,0,2,2,0,2
 PCHS Jogging Bottoms Large,1000008446,PCHS Jogging Bottoms,,,0,1,1,0,1
 PCHS Sweatshirt KS3 Navy 11-12 Years,2503652450,PCHS Sweatshirt KS3 Navy,Unitex,Smart Clothing Limited,1,3,3,0,2
-PCHS Zip Hoodie KS3 Navy Blue Large,7321247535,PCHS Zip Hoodie KS3 Navy,AWD,Ralawise,1,2,2,0,1
 PCHS Zip Hoodie KS4 Purple Large,2318056005,PCHS Zip Hoodie KS4 Purple,,Ralawise,1,2,2,0,1
 Sacred Heart Primary Hi-Viz PE Bag,1000000257,PE Bag Hi-Viz,,Smart Clothing Limited,0,1,1,0,1
 PE Drawstring Bag Lime Green,1000002596,PE Bag NO ZIP,,Jean Junction Limited,0,2,2,0,2
-Peak Valley Ladies Tassel PV30 UK 3 EUR_36,5056826401915,Peak Valley Tassel PV30,,,0,1,1,0,1
 Peak Valley Ladies Tassel PV31 UK 3 EUR_36,5056826401977,Peak Valley Tassel PV31,,,0,1,1,0,1
 Peak Valley Ladies Tassel PV31 UK 7 EUR_40,5056826402011,Peak Valley Tassel PV31,,,0,1,1,0,1
 "Pendle Vale Boys Blazer 30"" Chest",5053181166497,Pendle Vale Boys Blazer,,Trutex,0,1,1,0,1
 "Pendle Vale Boys Blazer 32"" Chest",5053181166510,Pendle Vale Boys Blazer,,Trutex,0,1,1,0,1
 Pendle Vale PE Football Socks 12-2,1000002459,Pendle Vale Fb Socks,,Smart Clothing Limited,0,1,1,0,1
-PV Knitted Jumper 32,1000000987,Pendle Vale Knitted Jumper,,Unique Clothing Manchester Ltd,0,1,1,0,1
+"Pendle Vale Girls Blazer 32"" Chest",5053181166701,Pendle Vale Girls Blazer,,Trutex,0,1,1,0,1
+Pendle Vale College Pe Top S/S 28/30,1000009226,Pendle Vale Pe Top S/S,Unitex,Smart Clothing Limited,0,1,1,0,1
+Pendle Vale Tracksuit Bottoms 28/30 R,1000009079,Pendle Vale PE Tracksuit R,,Smart Clothing Limited,0,1,1,0,1
 Pinder Black Super Skin Stretch Trs 30 L,1000003208,Pinder Black Super Skin Stretch Trs L,,,0,1,1,0,1
 Boys Gry Pullup Reg Trs 18 Age 1-2 Yrs,1000002787,Pinder Pull Up Trs Gry,Pinders,Pinders Schoolwear,0,1,1,0,1
 Boys Gry Pullup Reg Trs 26 Age 5-6 Yrs,1000002838,Pinder Pull Up Trs Gry,Pinders,Pinders Schoolwear,0,3,3,0,3
@@ -1271,8 +1236,6 @@ Royal Shadow FB Shorts Age 7-8 Yrs,1000004386,Shadow Shorts Royal,,Deans Schoolw
 Royal Shadow FB Shorts Age 9-10 Yrs,1000004387,Shadow Shorts Royal,,Deans Schoolwear,1,2,2,0,1
 SJS/Trawden Tartan Skirt Age 11-12,1000000057,SJS / Trawden Forest Tartan Skirts,BA033T,High Standard Ltd,1,3,3,0,2
 SJS/Trawden Tartan Pinafore 2-3 Yrs,1000000021,SJS / Trawden Tartan Pinafore Dress,,High Standard Ltd,0,1,1,0,1
-SJS/Trawden Tartan Pinafore 9-10 Yrs,1000000028,SJS / Trawden Tartan Pinafore Dress,,High Standard Ltd,2,3,3,0,1
-SSS Boys Black Sturdy Fit Trouser 11-12,1000005109,SSS Sturdy Boys Trouser Black,,SSS Manchester LTD,1,2,2,0,1
 Girls Black Sturdy Fit Trouser Large,1000001736,Sturdy Fit Trs Blk,Tru Form,Vijay,0,1,1,0,1
 Summer Gingham Dress Green 18 Yr,1000004835,Summer Dress Green,,Deans Schoolwear,0,1,1,0,1
 Summer Gingham Dress Green 20 Yr,1000008549,Summer Dress Green,,Deans Schoolwear,0,1,1,0,1
@@ -1299,9 +1262,7 @@ Team Spider Man Drinking Bottle,8712645337121,Tolo Drinking Bottle,,Tolo,0,2,2,0
 3 Pairs Girls Trainer Socks 3-6,1000003260,Trainer Socks,Fresh Feel,Boston Billy Red Sox,0,1,1,0,1
 Girls Twin White Long Sleeve Blouse 24,1000005574,Twin White Blouse LS,,Smart Clothing Limited,0,2,2,0,2
 Girls Twin White Short Sleeve Blouse 24,1000005590,Twin White Blouse SS,,Smart Clothing Limited,0,2,2,0,2
-Boys Twin White Long Sleeve Shirts 12.5,1000005670,Twin White Shirts LS ,,Unique Clothing Manchester Ltd,2,3,3,0,1
 Boys Twin White Short Sleeve Shirts 11,1000005682,Twin White Shirts SS,,Unique Clothing Manchester Ltd,1,2,2,0,1
-Boys Twin White Short Sleeve Shirts 12.5,1000005685,Twin White Shirts SS,,Unique Clothing Manchester Ltd,2,3,3,0,1
 Boys Twin White Short Sleeve Shirts 14,1000005688,Twin White Shirts SS,,Unique Clothing Manchester Ltd,2,3,3,0,1
 Boys Twin White Short Sleeve Shirts 17.5,1000005695,Twin White Shirts SS,,Unique Clothing Manchester Ltd,0,2,2,0,2
 Unitex Jnr Boys Grey Slim Fit 28 6-7,1000001369,Unitex Slim Fit Trs Gry,Unitex,Smart Clothing Limited,0,3,3,0,3
@@ -1309,7 +1270,6 @@ Unitex Jnr Boys Grey Slim Fit 30 7-8,1000001370,Unitex Slim Fit Trs Gry,Unitex,S
 Bx014-02 Urban Boxer Short 3 Pairs M,1000007397,Urban Boxer Shorts 3P,,Boston Billy Red Sox,1,2,2,0,1
 Urban Boxer Short 3 Pair 9-11,1000007180,Urban Boxer Shorts 3P,,Boston Billy Red Sox,4,5,5,0,1
 US Brass Girls Maia Patent UK 5 EUR_38,1000008674,US Brass Girls Maia Patent,,,0,1,1,0,1
-Valentina Seamless Leggings S,1000009336,Valentina Seamless Legging,,,1,2,2,0,1
 Velcro Pumps Plimsols Child 9,1000003012,Velcro PE Plimsols,,Smart Clothing Limited,0,2,2,0,2
 Unitex Jnr Boys Black Slim Fit 28 6-7,1000003792,Vijay Slim Fit Boys Black Trouser,Unitex,Smart Clothing Limited,0,1,1,0,1
 West Craven Front Pleated Skirt Age 13-14 Years,1000001479,WC Front Pleat Skirt Blk,Pinders,,0,1,1,0,1
@@ -1322,14 +1282,14 @@ West Craven Front Pleated Skirt Ladies 6,1000003396,WC Front Pleat Skirt Blk,Pin
 "West Craven Girls Blazer 30"" Chest",1000000929,West Craven Girls Blazer,Trutex,Uniwears,0,2,2,0,2
 "West Craven Girls Blazer 36"" Chest",1000000935,West Craven Girls Blazer,Trutex,Uniwears,1,2,2,0,1
 "West Craven Girls Blazer 37"" Chest",1000000936,West Craven Girls Blazer,Trutex,Uniwears,0,1,1,0,1
-West Craven Hoodie Age 12-13 Years,1000003175,West Craven pe Hoodie,,,1,2,2,0,1
 West Craven Hoodie Small,1000003176,West Craven pe Hoodie,,,1,2,2,0,1
-West Craven Pe Polo Top S/S 11-12 (30-32),1000003227,West Craven Polo Top,,,1,2,2,0,1
+West Craven Girls PE Skorts L (34),1000003170,West Craven Skorts,,,0,1,1,0,1
+West Craven Girls PE Skorts M (32),1000003169,West Craven Skorts,,,0,2,2,0,2
+West Craven Girls PE Skorts S (30),1000003168,West Craven Skorts,,,1,2,2,0,1
 West Craven V-N Knit Jumper 36,1000003126,West Craven V-N Knit jumpers,,,0,1,1,0,1
 West Craven V-N Knit Jumper 38,1000003127,West Craven V-N Knit jumpers,,,0,1,1,0,1
 West Craven V-N Knit Jumper 40,1000003128,West Craven V-N Knit jumpers,,,0,1,1,0,1
 West Craven V-N Knit Jumper 42,1000003129,West Craven V-N Knit jumpers,,,0,1,1,0,1`;
-
 const BUILD_DATE = "14 Aug 2026";
 const BUILD_STAMP = "20260814-145418";
 
@@ -1349,7 +1309,7 @@ const LOCATION_ORDER = [
   'Unit',
   'Unmapped'
 ];
-// ===== EMBEDDED IMAGE MAP (barcode -> Shopify product photo URL, 213 of 289 items resolved) =====
+// ===== EMBEDDED IMAGE MAP (barcode -> Shopify product photo URL, 179 of 250 items resolved) =====
 const IMAGE_MAP = {
   "1000002338": "https://cdn.shopify.com/s/files/1/2344/5735/products/Pendle_Priary_Sweatshirt.jpg?v=1748867976",
   "1000000097": "https://cdn.shopify.com/s/files/1/2344/5735/files/Lord_Street_Primary_Cardigan.png?v=1746786240",
@@ -2024,17 +1984,17 @@ const IMAGE_MAP = {
   "1000000122": "https://cdn.shopify.com/s/files/1/2344/5735/files/Sacred_Heart_Rc_Midlater.jpg?v=1746013140",
   "1000005682": "https://cdn.shopify.com/s/files/1/2344/5735/files/LS_SS_Twin_pack_T-Shirt_White_2.jpg?v=1751454605",
   "1000008536": "https://cdn.shopify.com/s/files/1/2344/5735/files/SummerGinghamSchoolDressSkyBlue.jpg?v=1748432668",
-  "1000009336": "https://cdn.shopify.com/s/files/1/2344/5735/files/Valentina_Seamless_Legging.jpg?v=1746705858",
+  "1000009336": "https://cdn.shopify.com/s/files/1/2344/5735/files/Valentina_Seamless_Legging.jpg?v=1746705858"
 };
 // ===== EMBEDDED NELSON STOCK MAP (barcode -> Current Stock at Nelson, from EPOSNow Stock Levels report, 14 Aug 2026) =====
-const NELSON_STOCK_MAP = {"1000002951":0,"1000002953":5,"1000002967":0,"1000003001":6,"1000003003":6,"1000003004":0,"1000003005":1,"1000003007":0,"1000002473":1,"1550000002":1,"1000002471":2,"3260000002":1,"3960000001":4,"1000003223":9,"1000005248":0,"1000002573":0,"1000002581":7,"1000002580":4,"1000006244":51,"1000008756":1,"1000009913":4,"1000002595":1,"1000009914":14,"1000009908":1,"1000006983":0,"1000005371":11,"1000001712":0,"1000001713":1,"1000001714":0,"1000001715":1,"1000001717":0,"1000001700":0,"1000001702":3,"1000001579":0,"1000001582":0,"1000001566":1,"1000001627":1,"1000001624":10,"1000001584":1,"1000007806":0,"1000005744":2,"1000005737":3,"5059467431679":1,"1000001181":26,"1000001646":11,"1000004096":0,"1000004097":0,"1000001212":178,"1000001213":60,"1000009042":34,"1000007789":4,"1000007791":1,"1000007792":0,"1000005544":3,"1000005547":13,"1000001681":1,"1000001183":1,"1000001166":2,"1000001186":2,"1000007732":2,"1000009177":5,"5056213429904":13,"1000005067":1,"1000006359":4,"1000001660":4,"5055780901929":18,"5055780901974":21,"1000007695":6,"1000007696":8,"1000009190":6,"1000007716":19,"1000007719":13,"1000008317":10,"1000007701":40,"1000007702":43,"1000008285":50,"1000007708":26,"1000007710":73,"1000009011":18,"1000002214":5,"1000009012":2,"1000009007":0,"1000000890":1,"1000000891":5,"1000000892":1,"1000000896":4,"1000000898":0,"1000000900":0,"1000000798":1,"1000000799":1,"1000000800":3,"1000000812":1,"1000009919":33,"1000007870":2,"1000007876":2,"1000007868":0,"1000007871":1,"1000007874":8,"1000008609":6,"1000007997":8,"1000008610":3,"1000008611":0,"1000008008":4,"1000008612":0,"1000008009":4,"1000008081":1,"1000008320":2,"1000001072":1,"1000001315":26,"1000001312":23,"1000001402":1,"1000001074":0,"5053181287529":2,"1000002231":0,"1000007268":6,"1000006108":0,"1000006770":0,"1000006771":0,"1000006773":0,"1000002599":0,"1000009401":2,"1000009395":0,"1000000354":4,"1000000389":5,"1000000365":27,"5060569229255":0,"1000006327":16,"1000006328":44,"1000006325":4,"1000006331":29,"1000006332":24,"1000006330":13,"1000006339":1,"1000006402":2,"1000006375":5,"1000006369":55,"1000006451":3,"1000006367":16,"1000008239":0,"1000008241":0,"1000001222":1,"1000001308":0,"1000007630":6,"1000006494":0,"1000000869":0,"1000000865":0,"1000000866":0,"1000000868":0,"1000000159":1,"1000000152":2,"1000000156":4,"1000005484":6,"1000003679":7,"1000006946":4,"1000006947":0,"1000006942":4,"1000006941":3,"1000006924":6,"1000009409":0,"1000001871":1,"5055780901455":0,"5055780901479":5,"5059467223526":1,"5059467223557":11,"5059467223588":3,"1000000955":6,"1000004199":18,"1000004201":9,"1000004203":11,"1000000963":5,"5059467225360":1,"5059467225407":2,"1000004192":5,"1000004193":53,"1000008393":26,"1000004073":13,"1000004074":6,"1000004077":3,"1000004067":7,"1000004225":60,"1000005379":1,"1000004083":76,"1000004084":63,"1000004081":6,"1000004080":43,"1000007745":1,"1000000127":1,"1000000129":11,"1000004678":26,"1000004668":3,"1000004669":9,"1000004670":21,"1000004673":31,"1000004674":8,"5305241333":4,"1000008446":0,"2503652450":1,"7321247535":45,"2318056005":3,"1000000257":1,"1000002596":1,"5056826401915":2,"5056826401977":2,"5056826402011":5,"5053181166497":1,"5053181166510":5,"1000002459":19,"1000000987":10,"1000003208":4,"1000002787":1,"1000002838":0,"1000002902":0,"1000002774":2,"1000002776":0,"1000005925":0,"1000000457":0,"1000009417":0,"1000002746":23,"1000002721":0,"1000002722":34,"1000002724":6,"1000002758":23,"1000002755":7,"1000004384":7,"1000004385":3,"1000004386":13,"1000004387":20,"1000000057":16,"1000000021":0,"1000000028":19,"1000005109":0,"1000001736":0,"1000004835":0,"1000008549":1,"1000008226":1,"1000002569":2,"1000002570":6,"1000002500":0,"1000002568":1,"1000002502":0,"1000002572":7,"1000002498":2,"1000006354":0,"1000006351":14,"1000006352":13,"1000006349":13,"1000006350":5,"1000003260":0,"1000005574":4,"1000005590":2,"1000005670":11,"1000005682":13,"1000005685":12,"1000005688":11,"1000005695":4,"1000001369":0,"1000001370":0,"1000007397":3,"1000007180":0,"1000008674":0,"1000009336":4,"1000003012":22,"1000003792":0,"1000001479":0,"1000001480":1,"1000001486":0,"1000003396":1,"1000000915":3,"1000000917":2,"1000000919":1,"1000000929":1,"1000000935":1,"1000000936":1,"1000003175":3,"1000003176":1,"1000003227":6,"1000003126":0,"1000003127":1,"1000003128":0,"1000003129":0};
-
+const NELSON_STOCK_MAP = {"1000009226":20,"1000004835":0,"1000001166":2,"1000002746":23,"1000004077":3,"1000003396":1,"1000006451":3,"1000001566":1,"1000007874":8,"1000006108":0,"1000002967":0,"1000006328":44,"1000000936":1,"1000007005":0,"1000002838":0,"1000001579":0,"1000003681":11,"1000003169":4,"1000003679":7,"1000007871":1,"5059467225407":2,"1000007806":0,"1000001486":0,"1000005682":13,"1000002471":2,"5059467431679":1,"1000000159":1,"5055780901479":5,"1000001700":0,"1000004096":0,"1000008081":1,"1000005737":3,"1000009007":0,"1000004081":6,"5055780901929":18,"1000008009":4,"1000002473":1,"1000000798":1,"1000006367":16,"1000002599":0,"1000001315":26,"1000001370":0,"1000003005":1,"1000000865":0,"1000006773":0,"1000000457":0,"1000009914":14,"1000002459":19,"5056826402011":5,"1000004084":63,"1000006354":0,"1000006325":4,"1000000935":1,"1000004192":5,"1000000919":1,"1000006770":0,"1000002573":0,"1000001312":23,"1000004097":0,"1000006771":0,"1000007718":27,"1000000156":4,"1000003170":5,"1000001584":1,"1000001213":60,"1000002572":7,"1000007789":4,"1000003004":0,"1000001702":3,"1000006244":51,"1000009395":0,"1000005574":4,"1000002776":0,"1000007792":0,"1000008609":6,"1000004670":20,"1000006924":6,"1000002214":5,"1000007268":6,"1000001212":178,"1000008610":3,"1000009409":0,"1000009417":0,"1000003176":1,"1000000917":2,"1000003128":0,"5053181166701":3,"1000008241":0,"1000005688":10,"1000000257":1,"1000003012":22,"1000005067":1,"1000006947":0,"1000007699":2,"1000007870":2,"1000006375":5,"1000000155":5,"1000007397":3,"1000008446":0,"1000009177":5,"1000008611":0,"1000005484":6,"1000005744":2,"1000006339":1,"5055780901455":0,"1000009908":1,"1000003127":1,"1000009913":4,"1000004385":3,"1000000799":1,"1000008612":0,"1000002755":7,"1000002724":6,"1000002902":0,"1000006349":13,"3260000002":1,"1000008239":0,"1000000891":4,"5055780901974":21,"1000008320":2,"1000006351":14,"1000001627":1,"1000000900":0,"5053181287529":2,"1000000800":3,"3960000001":4,"1000007745":1,"1000002595":0,"1000001871":1,"1000004386":13,"1000000152":2,"1000003126":0,"1000002498":2,"2318056005":3,"1000001074":0,"1000001186":2,"1000001072":1,"1000007630":6,"1000006350":5,"1000005925":0,"1000000869":0,"1000004083":76,"1000008226":1,"1000003007":0,"1000007732":2,"1000001308":0,"1000004678":26,"1000000915":3,"1000003001":6,"1000002231":0,"1000006332":24,"1000004387":20,"5053181166497":1,"1000005371":11,"5053181166510":5,"5059467225360":1,"1000006327":16,"1000002569":2,"1000006402":2,"1000001736":0,"1000008008":4,"1000000057":16,"1000002774":2,"1000008756":1,"5059467223526":1,"1000002502":0,"1000008549":1,"1000006946":4,"1000003208":4,"1000002568":1,"1550000002":1,"1000004674":8,"1000006330":13,"1000000929":1,"1000000812":1,"1000005695":4,"1000003792":0,"1000009012":2,"1000001479":0,"1000000892":0,"1000000021":0,"1000001624":10,"1000007868":0,"1000007876":2,"1000006941":3,"1000001183":1,"5056826401977":2,"1000004669":9,"1000001369":0,"1000001713":1,"1000002953":5,"1000002787":1,"1000002951":0,"1000001402":1,"1000004668":3,"1000002500":0,"1000006983":0,"1000002722":34,"1000005248":0,"1000001480":1,"1000008674":0,"1000002580":4,"1000009401":2,"1000001582":0,"1000002758":23,"1000001714":0,"1000006369":55,"1000001222":1,"1000000866":0,"1000007791":1,"1000003003":6,"1000003223":9,"1000006942":4,"1000000898":0,"1000004079":3,"5305241333":4,"1000000890":1,"1000004384":7,"1000006331":29,"1000007180":0,"1000000868":0,"1000005544":3,"1000001715":1,"1000003168":5,"1000003260":0,"1000001681":1,"1000005379":1,"1000006359":4,"1000002596":1,"1000008285":50,"1000001712":0,"1000002570":6,"1000002721":0,"1000001717":0,"1000004080":43,"1000003129":0,"1000006494":0,"1000005590":2,"2503652450":1,"1000009079":24,"1000006352":13};
 // ===== REVERSE DIRECTION (Colne -> Nelson) =====
 // SAMPLE_CSV_REV = EposNow Stock Warnings filtered to Nelson (what Nelson is short of).
 // SRC_STOCK_REV  = EposNow Stock Levels filtered to Colne (the source we pick from).
 // Both are injected by build_index.py. Empty = reverse data not built yet.
 const SAMPLE_CSV_REV = `Name,Barcode,Category,Brand,Supplier,CurrentStock,MinStock,MaxStock,OnOrder,Reorder
 3 x Ankle Bow Socks Green 4-6.5,1000005246,Ankle Bow Scks Grn 3P,,Boston Billy Red Sox,1,2,2,0,1
+Bradley Primary Polo Shirt M 40,1000004795,Bradley Polo Shirt,,Deans Schoolwear,-1,0,0,0,1
 Black Britney Skirt 16 W34-L18,1000001711,Britney Skirt Black,,High Standard Ltd,0,1,1,0,1
 Black Britney Skirt 18 W36-L18,1000001712,Britney Skirt Black,,High Standard Ltd,0,1,1,0,1
 Black Britney Skirt 22 W40-L19,1000001714,Britney Skirt Black,,High Standard Ltd,0,1,1,0,1
@@ -2075,13 +2035,16 @@ Pinder Black Super Skin Stretch Trs 27,1000003204,Pinder Black Super Skin Stretc
 Plain PE T-Shirt Purple Age 12-13 Yrs,1000005893,Plain PE T-Shirt Purple,Fruit of the Loom,Ralawise,-1,0,0,0,1
 Plain PE T-Shirt White Large,1000000605,Plain PE T-Shirt White,Banner,Ralawise,-1,0,0,0,1
 Primet Primary Cardigan Ages 5-6 Yrs,1000000500,Primet Primary Cardigan,,Smart Clothing Limited,0,1,1,0,1
+Primet Primary Red Polo Shirt 9-10 Yr,1000000483,Primet Primary Polo Shirt,,Deans Schoolwear,0,1,1,0,1
 Primet Primary Red Polo Shirt S,1000000510,Primet Primary Polo Shirt,,Deans Schoolwear,0,1,1,0,1
 Primet Primary Sweatshirt Age 5-6 Yr,1000000470,Primet Primary Sweatshirt,,Deans Schoolwear,0,1,1,0,1
+Primet Primary Sweatshirt Ages 9-10 Yr,1000000472,Primet Primary Sweatshirt,,Deans Schoolwear,0,1,1,0,1
 Sacred Heart Primary Cardigan 5-6,1000000166,Sacred Heart Primary Cardigan,,Smart Clothing Limited,0,1,1,0,1
 Sacred Heart Primary Polo Shirt 5-6,1000000248,Sacred Heart Primary Polo Shirt,,Deans Schoolwear,0,1,1,0,1
 Sacred Heart Sweatshirt Age 3-4 Yr,1000000259,Sacred Heart Primary Sweatshirt,,Smart Clothing Limited,0,1,1,0,1
 Sacred Heart RC Pro Tee Shirt 4-5 Yrs,1000000118,Sacred Heart Pro T-Shirt,,Chadwick Textiles Ltd,0,1,1,0,1
 Sacred Heart Prim Satchel Strap Bag,1000000244,Satchel Bag,,,0,1,1,0,1
+SSS Boys Black Sturdy Fit Trouser 11-12,1000005109,SSS Sturdy Boys Trouser Black,,SSS Manchester LTD,-1,0,0,0,1
 St Johns C.E Primary Fleece Jacket 11-12,1000002718,St Johns C.E Fleece Jkt,,Sportex,0,1,1,0,1
 St Johns C.E Primary Fleece Jacket 5-6,1000002715,St Johns C.E Fleece Jkt,,Sportex,0,1,1,0,1
 St Johns C.E Primary Fleece Jacket 7-8,1000002716,St Johns C.E Fleece Jkt,,Sportex,0,1,1,0,1
@@ -2131,8 +2094,7 @@ Boys Blue Shirt Twin SS 18,1000003766,Twin Blue Shirts SS,,Unique Clothing Manch
 US Brass Victor Velcro Shoes UK 4 EUR_37,1000008702,US Brass Victor Velcro,,,-1,0,0,0,1
 Unitex Jnr Boys Black Slim Fit 34 9-10,1000003794,Vijay Slim Fit Boys Black Trouser,Unitex,Smart Clothing Limited,-1,0,0,0,1
 Unitex Jnr Boys Black Slim Fit 38 11-12,1000003796,Vijay Slim Fit Boys Black Trouser,Unitex,Smart Clothing Limited,-1,0,0,0,1`;
-const SRC_STOCK_REV = {"1000005246":0,"1000001711":1,"1000001712":0,"1000001714":0,"1000001717":0,"1000001700":0,"1000001707":1,"1000001579":0,"1000001582":0,"1000001567":1,"1000000243":5,"1000000735":0,"1000002280":1,"1000000097":11,"1000000098":16,"1000000099":22,"1000000100":2,"1000000101":13,"5354808572":127,"1000000608":3,"1000000610":13,"1000000612":8,"1000007748":0,"1000005133":11,"1000005136":3,"1000002312":30,"1000002313":23,"1000004427":20,"1000000752":1,"1000000734":3,"1000000728":2,"1000005219":0,"1000000704":5,"1000000705":3,"1000000706":3,"1000003202":2,"1000003203":3,"1000003204":2,"1000005893":1,"1000000605":1,"1000000500":14,"1000000510":0,"1000000470":12,"1000000166":3,"1000000248":1,"1000000259":3,"1000000118":3,"1000000244":1,"1000002718":0,"1000002715":0,"1000002716":0,"1000002717":0,"1000006543":11,"1000006531":8,"1000006532":15,"1000006184":11,"1000007108":0,"1000003732":0,"1000003733":0,"1000003734":0,"1000003735":0,"1000003736":0,"1000003737":0,"1000003738":0,"1000003739":0,"1000003740":0,"1000003716":0,"1000003717":1,"1000003718":0,"1000003719":0,"1000003720":0,"1000003721":0,"1000003722":0,"1000003723":0,"1000003724":0,"1000003767":0,"1000003768":0,"1000003769":0,"1000003770":1,"1000003771":0,"1000003772":0,"1000003779":0,"1000003780":0,"1000003781":0,"1000003782":0,"1000003783":0,"1000003784":0,"1000003755":0,"1000003756":0,"1000003757":0,"1000003758":0,"1000003764":0,"1000003765":0,"1000003766":0,"1000008702":1,"1000003794":3,"1000003796":2};
-
+const SRC_STOCK_REV = {"1000005136":3,"1000000259":3,"1000000483":21,"1000000101":13,"1000001579":0,"1000000472":6,"1000005219":0,"1000007108":0,"1000002312":30,"1000001711":1,"1000002715":0,"1000005109":2,"1000000605":1,"1000001700":0,"1000003733":0,"1000003767":0,"1000002718":0,"1000002313":23,"1000000097":11,"1000000752":1,"1000003724":0,"1000003766":0,"1000000705":3,"1000002280":1,"1000000098":14,"1000003794":3,"1000003765":0,"1000005893":1,"1000003735":0,"1000007748":0,"1000000612":8,"1000000728":2,"1000003757":0,"1000003720":0,"1000003738":0,"1000003203":3,"1000003779":0,"1000000166":3,"1000003784":0,"1000000470":12,"1000001707":1,"1000004795":0,"1000002717":0,"1000002716":0,"1000003796":2,"1000000735":0,"1000003782":0,"1000000704":5,"1000003770":1,"1000000608":3,"1000000500":14,"1000003739":0,"1000006532":15,"1000005246":0,"1000003737":0,"1000003202":2,"1000003204":2,"1000003717":1,"1000003780":0,"1000003769":0,"1000006531":8,"1000003772":0,"1000003721":0,"1000000734":3,"1000003783":0,"1000000248":1,"1000003723":0,"1000000706":3,"5354808572":127,"1000000118":3,"1000000243":5,"1000003758":0,"1000000100":2,"1000001567":1,"1000003768":0,"1000003755":0,"1000003771":0,"1000000244":1,"1000003781":0,"1000003716":0,"1000003740":0,"1000006184":8,"1000000510":0,"1000003722":0,"1000003736":0,"1000001582":0,"1000001714":0,"1000000610":13,"1000000099":22,"1000003756":0,"1000003732":0,"1000008702":1,"1000006543":11,"1000005133":11,"1000003719":0,"1000004427":20,"1000003764":0,"1000001712":0,"1000003718":0,"1000001717":0,"1000003734":0};
 // ===== DIRECTIONS =====
 // LOCATION_MAP describes the Nelson stockroom walking route only. Colne has no
 // sub-location mapping, so the reverse direction sorts by category/name instead
