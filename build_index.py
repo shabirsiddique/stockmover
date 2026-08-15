@@ -183,6 +183,25 @@ def bump_build_stamp(html):
     return html, stamp
 
 
+def set_build_date(html, today):
+    """
+    Refresh `const BUILD_DATE = "D Mon YYYY";` — the date staff actually read
+    in the app header.
+
+    This is separate from BUILD_STAMP: the stamp drives the auto-updater, this
+    string is the human-facing "data as of" label. On 2026-08-15 a build
+    shipped correct 303-row data still labelled "14 Aug 2026", because only the
+    stamp was being bumped. A stale date here is worse than a stale stamp —
+    staff see a date they trust and assume the picks are yesterday's.
+    """
+    html, n = re.subn(r'(const\s+BUILD_DATE\s*=\s*")[^"]*(")',
+                      r"\g<1>%s\g<2>" % today, html, count=1)
+    if n != 1:
+        raise SystemExit("error: BUILD_DATE not found — the app would show a "
+                         "stale data date. Refusing to continue.")
+    return html
+
+
 def js_object(mapping, indent=False):
     if indent:
         return json.dumps(mapping, indent=2, ensure_ascii=False)
@@ -342,6 +361,7 @@ def main():
         report.append("images +%d" % added)
 
     html, stamp = bump_build_stamp(html)
+    html = set_build_date(html, today)
     report.append("stamp %s" % stamp)
 
     out_path = args.out or args.index
