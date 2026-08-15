@@ -164,6 +164,25 @@ def js_template_literal(text):
     return "`" + text.replace("\\", "\\\\").replace("`", "\\`").replace("${", "\\${") + "`"
 
 
+def bump_build_stamp(html):
+    """
+    Refresh `const BUILD_STAMP = "YYYYMMDD-HHMMSS";`.
+
+    The app polls its own URL on load and on regaining focus, compares this
+    value with the served copy, and hard-reloads if they differ. That is the
+    only mechanism that updates phones and iOS home-screen installs, which
+    otherwise cache index.html indefinitely. A build that does not move the
+    stamp deploys correctly and is never seen by staff.
+    """
+    stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+    html, n = re.subn(r'(const\s+BUILD_STAMP\s*=\s*")[^"]*(")',
+                      r"\g<1>%s\g<2>" % stamp, html, count=1)
+    if n != 1:
+        raise SystemExit("error: BUILD_STAMP not found — phones would not "
+                         "pick up this build. Refusing to continue.")
+    return html, stamp
+
+
 def js_object(mapping, indent=False):
     if indent:
         return json.dumps(mapping, indent=2, ensure_ascii=False)
@@ -321,6 +340,9 @@ def main():
                    "%d of %d items resolved)" % (resolved, len(colne_rows)),
         )
         report.append("images +%d" % added)
+
+    html, stamp = bump_build_stamp(html)
+    report.append("stamp %s" % stamp)
 
     out_path = args.out or args.index
     with open(out_path, "w", encoding="utf-8") as fh:
