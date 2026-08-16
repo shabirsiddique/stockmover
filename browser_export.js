@@ -33,6 +33,9 @@
  *   2. await __SM.grab({locationId, keep, columns})   -> metadata + stores text
  *   3. __SM.emit(i)                                   -> render chunk i to DOM
  *      then read it with get_page_text, per chunk, verifying each sha.
+ *      The chunk is fenced between <<<SMBEGIN>>> and <<<SMEND>>>; slice between
+ *      those markers. get_page_text strips leading/trailing whitespace, so an
+ *      unfenced chunk that begins or ends with a space comes back corrupt.
  *
  * The Stock Levels page ignores locationId in the FormData — you must set the
  * dropdown and click Apply on the live page first, then grab() with no
@@ -50,6 +53,8 @@
  */
 window.__SM = (function () {
   const CHUNK = 10000;
+  const BEGIN = '<<<SMBEGIN>>>';
+  const END = '<<<SMEND>>>';
 
   function parseCsv(t) {
     const rows = []; let row = [], cur = '', q = false;
@@ -123,14 +128,25 @@ window.__SM = (function () {
 
   // Render one chunk into the DOM for get_page_text. Returns its own sha so a
   // truncated read fails loudly instead of silently losing rows.
+  //
+  // The payload is fenced between BEGIN/END sentinels because get_page_text
+  // STRIPS LEADING AND TRAILING WHITESPACE from what it returns (observed
+  // 2026-08-16: a chunk boundary landed mid-field on 'US ' and the trailing
+  // space was silently dropped, one byte short). Without the fence the reader
+  // cannot tell a stripped space from a chunk that genuinely ended there. With
+  // it, the whitespace sits in the interior of the returned text and survives.
+  // Slice between the sentinels, then verify sha256 — never trust the raw read.
   async function emit(i) {
     const s = window.__SM_TEXT.slice(i * CHUNK, (i + 1) * CHUNK);
     const pre = document.createElement('pre');
     pre.id = 'smout';
-    pre.textContent = s;
+    pre.textContent = BEGIN + s + END;
     document.body.innerHTML = '';
     document.body.appendChild(pre);
-    return JSON.stringify({ chunk: i, len: s.length, sha256: await sha256(s) });
+    return JSON.stringify({
+      chunk: i, len: s.length, sha256: await sha256(s),
+      fenced: true, begin: BEGIN, end: END
+    });
   }
 
   return { grab, emit, parseCsv, sha256, CHUNK };
