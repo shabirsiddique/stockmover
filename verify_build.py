@@ -76,6 +76,12 @@ def main():
     ap.add_argument('--old', required=True, help='currently deployed index.html')
     ap.add_argument('--new', required=True, help='freshly built index.html')
     ap.add_argument('--rows', type=int, help='row count reported by build_index.py')
+    ap.add_argument('--allow-app-change', metavar='REASON',
+                    help='Permit non-header differences outside the data blocks, for a '
+                         'DELIBERATE change to HTML/CSS/JS. Requires a reason, which is '
+                         'printed and belongs in the run-log entry. Never pass this to '
+                         'silence a diff you did not intend -- read every line first; an '
+                         'unexplained line here means app logic changed by accident.')
     a = ap.parse_args()
 
     old = open(a.old, encoding='utf-8').read()
@@ -124,11 +130,15 @@ def main():
             if l[:1] in '+-' and l[:3] not in ('---', '+++')]
     for l in diff:
         print('     ' + l[:200])
-    check(len(diff) <= EXPECTED_HEADER_DIFFS * 2,
-          'non-data diff is %d lines, expected <= %d (%d header comments)'
-          % (len(diff), EXPECTED_HEADER_DIFFS * 2, EXPECTED_HEADER_DIFFS))
-    check(all('=====' in l for l in diff),
-          'every non-data diff line is a header comment (app logic unchanged)')
+    if a.allow_app_change:
+        print('     NOTE app change permitted: %s' % a.allow_app_change)
+        print('     %d non-data diff line(s) accepted -- read them above.' % len(diff))
+    else:
+        check(len(diff) <= EXPECTED_HEADER_DIFFS * 2,
+              'non-data diff is %d lines, expected <= %d (%d header comments)'
+              % (len(diff), EXPECTED_HEADER_DIFFS * 2, EXPECTED_HEADER_DIFFS))
+        check(all('=====' in l for l in diff),
+              'every non-data diff line is a header comment (app logic unchanged)')
 
     # 5. File size.
     check(len(new) >= len(old) * 0.92,
