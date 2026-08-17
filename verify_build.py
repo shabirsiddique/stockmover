@@ -84,10 +84,22 @@ def main():
     # 1. Version constants -- by value, never by diff. A constant stale in BOTH
     #    files produces no diff at all; that blind spot shipped the 14 Aug stamp
     #    and the 15 Aug date.
+    #
+    #    BUILD_DATE is "D Mon YYYY HH:MM" as of 2026-08-17. The time matters:
+    #    the job runs 4x daily and stock moves between slots, so the date alone
+    #    cannot tell staff whether the list predates the pick they just did.
+    #    Assert BOTH halves -- date is today AND the time actually advanced --
+    #    because a date-only check would pass a build whose clock never moved,
+    #    which is exactly the class of bug that shipped the stale 14 Aug stamp.
     today = datetime.date.today().strftime('%-d %b %Y')
     nd, ns, od, os_ = const(new, 'BUILD_DATE'), const(new, 'BUILD_STAMP'), \
         const(old, 'BUILD_DATE'), const(old, 'BUILD_STAMP')
-    check(nd == today, 'BUILD_DATE == today (%r, was %r)' % (nd, od))
+    m = re.match(r'^(\d{1,2} \w{3} \d{4}) (\d{2}:\d{2})$', nd)
+    check(bool(m), 'BUILD_DATE matches "D Mon YYYY HH:MM" (got %r)' % nd)
+    if m:
+        check(m.group(1) == today,
+              'BUILD_DATE date part == today (%r, was %r)' % (nd, od))
+        check(nd != od, 'BUILD_DATE advanced (%r -> %r)' % (od, nd))
     check(ns != os_, 'BUILD_STAMP moved (%r -> %r)' % (os_, ns))
 
     # 2. Carried-forward blocks intact.

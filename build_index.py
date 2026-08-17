@@ -183,19 +183,25 @@ def bump_build_stamp(html):
     return html, stamp
 
 
-def set_build_date(html, today):
+def set_build_date(html, stamp_label):
     """
-    Refresh `const BUILD_DATE = "D Mon YYYY";` — the date staff actually read
-    in the app header.
+    Refresh `const BUILD_DATE = "D Mon YYYY HH:MM";` — the "data as of" label
+    staff actually read in the app.
 
-    This is separate from BUILD_STAMP: the stamp drives the auto-updater, this
-    string is the human-facing "data as of" label. On 2026-08-15 a build
+    Includes the time as well as the date (added 2026-08-17 at the user's
+    request). The job runs four times a day and stock moves between slots, so
+    a date alone cannot tell staff whether the list in front of them predates
+    the pick they just did. Keep the date first so it stays readable at a
+    glance; the time is what makes it actionable.
+
+    This is separate from BUILD_STAMP: the stamp drives the auto-updater and is
+    not shown anywhere; this string is the human-facing label. On 2026-08-15 a build
     shipped correct 303-row data still labelled "14 Aug 2026", because only the
     stamp was being bumped. A stale date here is worse than a stale stamp —
     staff see a date they trust and assume the picks are yesterday's.
     """
     html, n = re.subn(r'(const\s+BUILD_DATE\s*=\s*")[^"]*(")',
-                      r"\g<1>%s\g<2>" % today, html, count=1)
+                      r"\g<1>%s\g<2>" % stamp_label, html, count=1)
     if n != 1:
         raise SystemExit("error: BUILD_DATE not found — the app would show a "
                          "stale data date. Refusing to continue.")
@@ -254,7 +260,12 @@ def main():
     args = ap.parse_args()
 
     html = open(args.index, encoding="utf-8").read()
-    today = _dt.date.today().strftime("%-d %b %Y")
+    now = _dt.datetime.now()
+    # Header comments carry the date only — they are provenance, not a label,
+    # and a time there would churn the non-data diff on every same-day rebuild.
+    today = now.strftime("%-d %b %Y")
+    # BUILD_DATE carries date + time; see set_build_date().
+    build_label = now.strftime("%-d %b %Y %H:%M")
     report = []
 
     # --- forward: Colne warnings -------------------------------------------
@@ -361,7 +372,7 @@ def main():
         report.append("images +%d" % added)
 
     html, stamp = bump_build_stamp(html)
-    html = set_build_date(html, today)
+    html = set_build_date(html, build_label)
     report.append("stamp %s" % stamp)
 
     out_path = args.out or args.index
