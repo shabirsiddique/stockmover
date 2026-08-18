@@ -82,6 +82,15 @@ def main():
                          'printed and belongs in the run-log entry. Never pass this to '
                          'silence a diff you did not intend -- read every line first; an '
                          'unexplained line here means app logic changed by accident.')
+    ap.add_argument('--allow-low-coverage', metavar='REASON',
+                    help='Permit nelson coverage below 95%%, for a build where the shortfall '
+                         'is EXPLAINED -- typically new lines Colne has taken that Nelson '
+                         'does not stock at all, so their barcodes are absent from the Nelson '
+                         'stock report. Requires a reason, which is printed and belongs in the '
+                         'run-log entry. Before passing this, list the missing barcodes and '
+                         'confirm they are genuinely absent from the source report rather '
+                         'than lost in parsing -- a coverage drop caused by a broken export '
+                         'or a truncated block looks identical from here.')
     a = ap.parse_args()
 
     old = open(a.old, encoding='utf-8').read()
@@ -121,8 +130,13 @@ def main():
     # 3. Stock-map coverage.
     if a.rows:
         cov = 100.0 * counts['NELSON_STOCK_MAP'][1] / a.rows
-        check(cov >= 95.0, 'nelson coverage %d/%d (%.1f%%) >= 95%%'
-              % (counts['NELSON_STOCK_MAP'][1], a.rows, cov))
+        label = 'nelson coverage %d/%d (%.1f%%) >= 95%%' % (
+            counts['NELSON_STOCK_MAP'][1], a.rows, cov)
+        if cov < 95.0 and a.allow_low_coverage:
+            print('     NOTE low coverage permitted: %s' % a.allow_low_coverage)
+            check(True, label + ' [waived]')
+        else:
+            check(cov >= 95.0, label)
 
     # 4. Non-data diff: only the expected header-comment lines may differ.
     diff = [l for l in difflib.unified_diff(strip_data(old).splitlines(),
