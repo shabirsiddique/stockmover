@@ -11,7 +11,7 @@ the rest of the file. That mistake is silent in the dangerous direction -- it ca
 make the non-data diff compare almost nothing and report a clean pass. Block
 extraction here is brace-matched, never regex-delimited.
 """
-import argparse, datetime, difflib, json, re, sys
+import argparse, csv, datetime, difflib, json, os, re, sys
 
 DICT_BLOCKS = ['IMAGE_MAP', 'LOCATION_MAP', 'NELSON_STOCK_MAP', 'SRC_STOCK_REV']
 CSV_BLOCKS = ['SAMPLE_CSV_REV', 'SAMPLE_CSV']  # longest name first: SAMPLE_CSV is a prefix
@@ -53,6 +53,48 @@ def block(text, name):
         raise SystemExit('%s failed to parse (%s) -- refusing to continue' % (name, e))
 
 
+def csv_block_barcodes(text, name):
+    """Barcodes from a `const NAME = `...`;` CSV template literal.
+
+    SAMPLE_CSV is CSV text in backticks, not an object, so it must not be sent
+    through block()/json.loads. Fails loudly rather than returning an empty set:
+    an empty set here would silently make the coverage denominator wrong in the
+    passing direction, which is the exact failure mode this file exists to stop.
+    """
+    m = re.search(r'const\s+%s\s*=\s*`(.*?)`;' % name, text, flags=re.S)
+    if not m:
+        raise SystemExit('CSV block not found: %s' % name)
+    rows = [r for r in m.group(1).splitlines() if r.strip()]
+    if len(rows) < 2:
+        raise SystemExit('%s has no data rows -- refusing to continue' % name)
+    hdr = [h.strip().lstrip('\ufeff') for h in next(csv.reader([rows[0]]))]
+    if 'Barcode' not in hdr:
+        raise SystemExit('%s header has no Barcode column: %r' % (name, hdr))
+    i = hdr.index('Barcode')
+    out = set()
+    for r in csv.reader(rows[1:]):
+        if len(r) > i and r[i].strip():
+            out.add(r[i].strip())
+    if not out:
+        raise SystemExit('%s yielded no barcodes -- refusing to continue' % name)
+    return out
+
+
+def load_never_at_nelson(path):
+    """Barcodes confirmed absent from Nelson's range. Missing file -> empty."""
+    try:
+        raw = json.load(open(path, encoding='utf-8'))
+    except FileNotFoundError:
+        return {}
+    out = {}
+    for k, v in raw.items():
+        if k.startswith('_'):
+            continue
+        if isinstance(v, dict):
+            out.update(v)
+    return out
+
+
 def const(text, name):
     m = re.search(r'%s\s*=\s*"([^"]*)"' % name, text)
     if not m:
@@ -91,6 +133,12 @@ def main():
                          'confirm they are genuinely absent from the source report rather '
                          'than lost in parsing -- a coverage drop caused by a broken export '
                          'or a truncated block looks identical from here.')
+    ap.add_argument('--never-at-nelson', metavar='PATH',
+                    default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                         'never_at_nelson.json'),
+                    help='JSON list of barcodes Nelson does not range at all. These are '
+                         'excluded from the coverage denominator so the figure measures '
+                         'UNEXPLAINED misses. See the file for maintenance rules.')
     a = ap.parse_args()
 
     old = open(a.old, encoding='utf-8').read()
@@ -127,11 +175,46 @@ def main():
     check(counts['LOCATION_MAP'][1] == 2040,
           'LOCATION_MAP == 2040 (got %d)' % counts['LOCATION_MAP'][1])
 
-    # 3. Stock-map coverage.
+    # 3. Stock-map coverage, measured on rows that COULD have matched.
+    #
+    #    The raw ratio (matched / all Colne warning rows) was being waived on every
+    #    run by 2026-08-19 because a fixed set of lines Nelson does not range at all
+    #    can never match. Worse, the raw figure moved the wrong way: as picks cleared
+    #    the warnings list the denominator shrank while that set stayed fixed, so it
+    #    read 94.9 -> 93.9 -> 93.2% across 18 Aug while unmatched rows went 17 -> 17
+    #    -> 16, i.e. coverage was flat-to-better while the number said "worse".
+    #    Excluding known-unrangeable barcodes makes a miss mean something again.
+    never = load_never_at_nelson(a.never_at_nelson)
+
+    # Stale-entry guard: if Nelson now stocks a listed line, the entry is wrong and
+    # must be removed, or it will hide a real miss forever. Fail, never warn.
+    resurfaced = sorted(set(never) & set(block(new, 'NELSON_STOCK_MAP')))
+    check(not resurfaced,
+          'never_at_nelson.json has no stale entries%s'
+          % ('' if not resurfaced else
+             ' -- Nelson now stocks %s; remove them from the file' % ', '.join(resurfaced)))
+
     if a.rows:
-        cov = 100.0 * counts['NELSON_STOCK_MAP'][1] / a.rows
-        label = 'nelson coverage %d/%d (%.1f%%) >= 95%%' % (
-            counts['NELSON_STOCK_MAP'][1], a.rows, cov)
+        rows_bc = csv_block_barcodes(new, 'SAMPLE_CSV')
+        nsm = set(block(new, 'NELSON_STOCK_MAP'))
+        unmatched = rows_bc - nsm
+        excluded = sorted(unmatched & set(never))
+        unexplained = sorted(unmatched - set(never))
+        denom = a.rows - len(excluded)
+
+        print('     rows=%d  matched=%d  unmatched=%d  (known-unrangeable=%d, '
+              'unexplained=%d)' % (a.rows, counts['NELSON_STOCK_MAP'][1],
+                                   len(unmatched), len(excluded), len(unexplained)))
+        for b in excluded:
+            print('       excluded  %-14s %s' % (b, never[b]))
+        for b in unexplained:
+            print('       UNEXPLAINED %s' % b)
+
+        raw = 100.0 * counts['NELSON_STOCK_MAP'][1] / a.rows
+        cov = 100.0 * (denom - len(unexplained)) / denom if denom else 0.0
+        label = ('nelson coverage %d/%d (%.1f%%) >= 95%% '
+                 '[raw %.1f%% before excluding %d unrangeable]'
+                 % (denom - len(unexplained), denom, cov, raw, len(excluded)))
         if cov < 95.0 and a.allow_low_coverage:
             print('     NOTE low coverage permitted: %s' % a.allow_low_coverage)
             check(True, label + ' [waived]')
