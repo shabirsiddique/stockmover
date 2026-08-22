@@ -149,6 +149,32 @@ window.__SM = (function () {
     });
   }
 
-  return { grab, emit, parseCsv, sha256, CHUNK };
+
+  // --- __SM_NORM__ ---------------------------------------------------------
+  // Pre-normalise Epos Now's '2.00000' integers to '2' BEFORE transport.
+  // build_index.py's num() does this anyway, so it is lossless, and it shrinks
+  // the payload by roughly a third (measured 2026-08-22: Colne warnings
+  // 28,334 -> 20,594 bytes, Nelson 12,298 -> 8,914). ONLY these five columns,
+  // and ONLY values matching /^-?\d+\.0+$/ — anything with a non-zero
+  // fraction is left verbatim and counted in `skipped`, which MUST be 0.
+  // Do not extend this to TotalStock or any other column.
+  function norm(text) {
+    const COLS = ['CurrentStock','MinStock','MaxStock','OnOrder','Reorder'];
+    const rows = parseCsv(text);
+    const head = rows[0];
+    const idx = COLS.map(c => head.indexOf(c)).filter(i => i >= 0);
+    let changed = 0, skipped = 0;
+    for (let r = 1; r < rows.length; r++) {
+      for (const i of idx) {
+        const v = rows[r][i];
+        if (v === undefined) continue;
+        if (/^-?\d+\.0+$/.test(v)) { rows[r][i] = String(parseInt(v, 10)); changed++; }
+        else if (/^-?\d*\.\d+$/.test(v)) { skipped++; }
+      }
+    }
+    return { text: ser(rows), changed, skipped };
+  }
+
+  return { grab, emit, parseCsv, sha256, norm, CHUNK };
 })();
 'ready'
