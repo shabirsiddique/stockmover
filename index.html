@@ -2786,11 +2786,25 @@ document.addEventListener('keydown', function(e){
         var served = m[1];
         if (served === BUILD_STAMP) return;
 
-        // Don't retry the same target stamp twice in one session.
-        var tried;
-        try { tried = sessionStorage.getItem('sm_reload_target'); } catch (e) { tried = null; }
-        if (tried === served) return;
-        try { sessionStorage.setItem('sm_reload_target', served); } catch (e) {}
+        /* Bounded retry per target stamp, NOT a one-shot latch.
+           The old code recorded the target stamp before reloading and then
+           refused to retry it ever again in that session. If the reload landed
+           on a stale edge copy (GitHub Pages serves cache-control max-age=600,
+           so there is a ~10 minute window after every deploy where this is
+           likely), the app gave up permanently and staff kept seeing the old
+           build with no way back short of force-quitting. Observed on the
+           user's phone 2026-08-25: origin was serving the new stamp while the
+           phone stayed on the previous build.
+           Allow MAX_RELOAD_ATTEMPTS tries per stamp so a briefly-stale edge can
+           be ridden out, while still bounding the pathological case where the
+           served copy never actually changes. */
+        var MAX_RELOAD_ATTEMPTS = 3;
+        var rec = null;
+        try { rec = JSON.parse(sessionStorage.getItem('sm_reload_attempts') || 'null'); } catch (e) { rec = null; }
+        if (!rec || rec.stamp !== served) rec = { stamp: served, n: 0 };
+        if (rec.n >= MAX_RELOAD_ATTEMPTS) return;
+        rec.n++;
+        try { sessionStorage.setItem('sm_reload_attempts', JSON.stringify(rec)); } catch (e) {}
 
         location.replace(location.origin + location.pathname + '?v=' + encodeURIComponent(served));
       })

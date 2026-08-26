@@ -46,6 +46,7 @@ rate is printed; a poor match rate means you should export Colne directly.
 """
 
 import argparse
+import os
 import csv
 import datetime as _dt
 import json
@@ -257,10 +258,40 @@ def main():
     ap.add_argument("--images", help="JSON: barcode -> Shopify image URL")
     ap.add_argument("--locations", help="JSON: barcode -> Nelson stockroom location")
     ap.add_argument("--out", help="Output path (defaults to --index, in place)")
+    ap.add_argument("--allow-stale-sources", action="store_true",
+                    help="Permit source CSVs older than the build date. Only for "
+                         "deliberate replays; normally a stale source is a bug.")
     args = ap.parse_args()
 
     html = open(args.index, encoding="utf-8").read()
     now = _dt.datetime.now()
+
+    # --- guard: source CSVs must not predate the build date -----------------
+    # BUILD_DATE is what staff read and trust. verify_build.py checks it equals
+    # TODAY, which cannot detect data carried over from an earlier day: a long
+    # session that crosses midnight, or a replay of yesterday's exports, would
+    # stamp day-old picks with this morning's date and look perfectly healthy.
+    # Nearly shipped exactly that on 2026-08-26 10:19 using 2026-08-25 17:39
+    # exports. Compare each source file's mtime against the build date instead.
+    _sources = [("--colne-warn", args.colne_warn), ("--nelson-warn", args.nelson_warn),
+                ("--nelson-stock", args.nelson_stock), ("--colne-stock", args.colne_stock)]
+    _stale = []
+    for _flag, _path in _sources:
+        if not _path:
+            continue
+        _m = _dt.datetime.fromtimestamp(os.path.getmtime(_path))
+        if _m.date() < now.date():
+            _stale.append("  %-15s %s  (exported %s, build is %s)"
+                          % (_flag, _path, _m.strftime("%-d %b %Y %H:%M"),
+                             now.strftime("%-d %b %Y %H:%M")))
+    if _stale:
+        _msg = ("error: source CSV(s) predate the build date — BUILD_DATE would "
+                "label stale picks as today's:\n" + "\n".join(_stale) +
+                "\nRe-export from Epos Now, or pass --allow-stale-sources if this "
+                "replay is deliberate.")
+        if not args.allow_stale_sources:
+            raise SystemExit(_msg)
+        print("WARNING (--allow-stale-sources): " + _msg.split("\n", 1)[1])
     # Header comments carry the date only — they are provenance, not a label,
     # and a time there would churn the non-data diff on every same-day rebuild.
     today = now.strftime("%-d %b %Y")
