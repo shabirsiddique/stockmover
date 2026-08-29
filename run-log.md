@@ -64,3 +64,27 @@
 - 2026-08-28 16:20 — OK | rows: 253 | nelson: 245/246 (99.6% of rangeable, raw 96.8%) | images +0 | commit 1ec19c1 | route: github-pages | reverse rows: 101 (user-invoked. Colne 193 -> 253 in five hours, the largest intra-day rise recorded; Nelson 96 -> 101. NEW UNEXPLAINED: barcode 20034 "Gisburn Road Primary Embroidery", category "Customers Garments P", Colne CurrentStock -1, absent from Nelson. This is a SERVICE/LABOUR line, not a garment — it appears on the warnings list only because a till transaction pushed it negative, and it can never be picked or transferred. Deliberately NOT added to never_at_nelson.json: that file is for stock lines Nelson does not range, and a service SKU is a different category of noise. If service lines keep surfacing, the better fix is a category-based exclusion in build_index.py (e.g. drop "Customers Garments" rows) rather than barcode entries — flagged for a future run, not implemented here because one sighting is not a pattern. Coverage passed comfortably at 99.6%. Export button still dead; Route B for all four, six chunks, all SHA-matched first time.)
 - 2026-08-28 17:53 — OK | rows: 267 | nelson: 259/260 (99.6% of rangeable, raw 97.0%) | images +0 | commit bfaa0c3 | route: github-pages | reverse rows: 102 (user-invoked, tenth build of this session. Colne 253 -> 267, Nelson 101 -> 102. 20034 "Gisburn Road Primary Embroidery" UNEXPLAINED for a SECOND consecutive run, still -1 at Colne and still absent from Nelson — consistent with the reading that it is a service/labour SKU that cannot be transferred. Two sightings now; if it appears a third time the right fix is a category filter for "Customers Garments" in build_index.py, NOT a never_at_nelson entry. Before starting, offered the user the blob-download route (four clicks, ~3 min) versus streaming (~20 min, no input); they chose streaming, so Route B was used as usual — six chunks, all SHA-matched first time. Export button not re-tested this run: it has fired no POST on five separate tests spanning 09:21 on 27 Aug to 19:20 the same evening, so it is treated as permanently broken on this account until Epos Now fix it. NOTE FOR THE NEXT RUN: ten consecutive builds have now retyped 40+ CSV chunks by hand. Per this skill's own rule about retyping belonging in a script, the honest fix is either (a) the user gets the Export button repaired, or (b) a committed helper that reads the emitted chunk straight from the DOM into the sandbox without a heredoc round-trip — the latter is not currently possible given get_page_text is the only channel, so (a) is the real answer and should keep being raised.)
 - 2026-08-28 22:32 — OK | rows: 195 | nelson: 187/188 (99.5% of rangeable, raw 95.9%) | images +0 | commit 8f07d93 | route: github-pages | reverse rows: 104 (user-invoked after another sheet was picked. Colne 267 -> 195, 72 lines cleared — the largest single-sheet clearance recorded, beating the 52 of 27 Aug. Nelson 102 -> 104. 20034 "Gisburn Road Primary Embroidery" UNEXPLAINED for the THIRD consecutive run — that is now a pattern, not a one-off. It is a service/labour SKU in category "Customers Garments P" that goes negative when rung up at the till and can never be picked or transferred. RECOMMENDED FIX, offered to the user rather than applied unilaterally because it changes what staff see on the pick list: filter rows whose Category begins "Customers Garments" out of SAMPLE_CSV in build_index.py, and have verify_build.py stop counting them in the coverage denominator. That is a two-line change and is preferable to a never_at_nelson entry, which is meant for stock lines Nelson does not range. Route B again — five chunks this run, all SHA-matched first time.)
+
+## 2026-08-29 18:25 — OK (256 rows)
+
+Route B export (Export button still dead — five confirmed tests since 27 Aug).
+Colne warnings 256, Nelson warnings 103, both levels filtered to the 356-barcode
+keep-list. All four files verified by full-file SHA-256 against the browser copy
+before building: colne_warnings 0621ccf5, nelson_warnings 286f43b7,
+nelson_levels ebe2363e, colne_levels f6d423be.
+
+Nelson coverage 256/256 (100.0%) — no unmatched, no unexplained. Deployed
+d069db7; live constants confirmed by no-store fetch (BUILD_DATE 29 Aug 2026
+18:25, BUILD_STAMP 20260829-182521, 244,637 bytes).
+
+Shipped the service-category filter in the same commit: SERVICE_CATEGORY_PREFIXES
+= ("customers garments",) plus drop_service_lines(), applied to both the forward
+and reverse warnings reads and reported (never silent). Barcode 20034 "Gisburn
+Road Primary Embroidery" did NOT appear in today's export, so the filter dropped
+nothing this run — it is in place as a guard, not a fix applied retrospectively.
+Chose a category filter over a never_at_nelson.json entry deliberately: that file
+is for stock lines Nelson does not range and hard-fails if the barcode ever shows
+up in Nelson's stock report, which is the wrong shape for a service SKU.
+
+Still outstanding: verify_build.py counts service lines in the coverage
+denominator. Harmless while the filter runs ahead of it, but worth tidying.
