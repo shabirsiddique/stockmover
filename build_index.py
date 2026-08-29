@@ -104,6 +104,34 @@ class _LineSink:
         self._bucket.append(text)
 
 
+# Categories that are services or labour, not stock. Rows in these categories
+# go NEGATIVE whenever they are rung up at the till, which pushes them onto the
+# Stock Warnings report exactly like a real shortage — but they cannot be picked,
+# carried between shops, or counted, so every one of them is noise on a pick list
+# and an UNEXPLAINED entry in the coverage check.
+#
+# Added 2026-08-28 after barcode 20034 "Gisburn Road Primary Embroidery"
+# (category "Customers Garments P") appeared UNEXPLAINED on three consecutive
+# builds. A never_at_nelson.json entry would have been the wrong instrument:
+# that file is for STOCK lines Nelson does not range, and its guard hard-fails
+# if the barcode ever shows up in Nelson's stock report. A service SKU is a
+# different kind of thing, and filtering the whole category catches the next one
+# without anybody having to notice it first.
+#
+# Match on the category PREFIX, case-insensitively: Epos Now has "Customers
+# Garments P" today and could as easily have "Customers Garments" tomorrow.
+SERVICE_CATEGORY_PREFIXES = ("customers garments",)
+
+
+def drop_service_lines(rows):
+    """Split rows into (keepers, dropped). Never silent — the caller reports."""
+    keep, dropped = [], []
+    for r in rows:
+        cat = (r.get("Category") or "").strip().lower()
+        (dropped if cat.startswith(SERVICE_CATEGORY_PREFIXES) else keep).append(r)
+    return keep, dropped
+
+
 def stock_map(rows, field="CurrentStock"):
     """barcode -> stock level, skipping rows with no barcode."""
     out = {}
@@ -301,6 +329,12 @@ def main():
 
     # --- forward: Colne warnings -------------------------------------------
     fields, colne_rows = read_csv(args.colne_warn)
+    colne_rows, _dropped_fwd = drop_service_lines(colne_rows)
+    if _dropped_fwd:
+        report.append("service lines dropped: %d" % len(_dropped_fwd))
+        for _r in _dropped_fwd:
+            print("  dropped service line: %-14s %s"
+                  % ((_r.get("Barcode") or "").strip(), (_r.get("Name") or "").strip()))
     html = replace_block(
         html, "SAMPLE_CSV",
         js_template_literal(warnings_to_csv_text(colne_rows, fields)),
@@ -336,6 +370,9 @@ def main():
     rev_rows = []
     if args.nelson_warn:
         rev_fields, rev_rows = read_csv(args.nelson_warn)
+        rev_rows, _dropped_rev = drop_service_lines(rev_rows)
+        if _dropped_rev:
+            report.append("service lines dropped (rev): %d" % len(_dropped_rev))
         html = replace_block(
             html, "SAMPLE_CSV_REV",
             js_template_literal(warnings_to_csv_text(rev_rows, rev_fields)),
