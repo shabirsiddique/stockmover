@@ -88,3 +88,4 @@ up in Nelson's stock report, which is the wrong shape for a service SKU.
 
 Still outstanding: verify_build.py counts service lines in the coverage
 denominator. Harmless while the filter runs ahead of it, but worth tidying.
+- 2026-08-30 07:59 — OK | rows: 236 | nelson: 236/236 (100.0%) | images +0 | commit 1964227 | route: github-pages (Stock Levels exported normally, but BOTH warnings exports produced no download and no network request at all — button reacts, table populated, nothing leaves the page. Fell back to the form-POST replay: HTTP 200, valid CSV, Colne 236 / Nelson 105. Separately: pixel-coordinate clicks on Export silently did nothing all run; clicking by element ref worked first time for Stock Levels. Click by ref, not coordinates. Chrome also saved the blob files as "SM_Colne_Warnings (5).csv" / "SM_Nelson_Warnings (2).csv" — the un-suffixed names in Downloads are stale 14 Aug files; always build from the exact newest filename.)
