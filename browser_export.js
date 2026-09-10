@@ -126,6 +126,80 @@ window.__SM = (function () {
     });
   }
 
+  // Stock Levels needs a TWO-STEP replay: post the Apply postback, then build
+  // the export request from the form the SERVER returns (its viewstate already
+  // has the location applied). Posting reconstructed fields returns page HTML.
+  //
+  // CRITICAL — VERIFY THE APPLIED LOCATION BEFORE EXPORTING. The filter
+  // silently resets to "All Locations" (24 Aug, 26 Aug, 10 Sep 2026). The CSV
+  // that comes back looks perfectly normal but every CurrentStock is the
+  // company-wide total, which credits one store with both stores' stock. On
+  // 10 Sep that got as far as a built index.html and was caught only by eye.
+  // The returned form carries the location the server actually applied, so
+  // read it back and refuse to export if it is not the one asked for — exact,
+  // not a heuristic. Then check the data too, in case the form ever lies.
+  // Covered by tests_location_filter.js.
+  async function grabTwoStep(locationId, opts) {
+    opts = opts || {};
+    const post = async (body) => fetch(location.href, {
+      method: 'POST', body: new URLSearchParams([...body]), credentials: 'include',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    });
+    const f0 = document.forms['Form1'];   // NOT 'aspnetForm' — that does not exist
+    if (!f0) throw new Error("form 'Form1' not found — wrong page?");
+    const fd0 = new FormData(f0);
+    fd0.set('ctl00$MainContent$filterControl$ddlLocations', locationId);
+    fd0.append('ctl00$MainContent$FetchFromServer', 'Apply');
+    const r1 = await post(fd0);
+    const doc = new DOMParser().parseFromString(await r1.text(), 'text/html');
+    const f1 = doc.forms['Form1'];
+    if (!f1) throw new Error('no Form1 in apply response ' + r1.status);
+
+    const sel = f1.querySelector('select[name*="ddlLocations"]');
+    const applied = sel ? sel.value : null;
+    if (applied !== locationId) {
+      throw new Error('LOCATION NOT APPLIED: asked for ' + locationId +
+        ', server returned ' + JSON.stringify(applied) + '. Refusing to export — ' +
+        'this is how an All-Locations report gets mistaken for a single store.');
+    }
+
+    const eb = f1.querySelector('input[name*="ExportCSVButton"]');
+    if (!eb) throw new Error('no export button in apply response');
+    const fd1 = new FormData(f1);
+    fd1.append(eb.name, eb.value);
+    const r2 = await post(fd1);
+    let t = await r2.text();
+    if (t.charCodeAt(0) === 0xFEFF) t = t.slice(1);
+    if (t.slice(0, 5) !== 'Name,') {
+      throw new Error('not CSV: status ' + r2.status + ' body=' + JSON.stringify(t.slice(0, 120)));
+    }
+    // Independent data-side check: an All-Locations export has
+    // CurrentStock == TotalStock on every row. Genuine single-location exports
+    // measured 55-65% equal (10 Sep 2026).
+    const rows = parseCsv(t);
+    const head = rows[0];
+    const ci = head.indexOf('CurrentStock'), ti = head.indexOf('TotalStock');
+    let equal = 0, n = 0;
+    if (ci >= 0 && ti >= 0) {
+      for (let i = 1; i < rows.length; i++) {
+        if (rows[i].length <= Math.max(ci, ti)) continue;
+        n++;
+        if (parseFloat(rows[i][ci] || '0') === parseFloat(rows[i][ti] || '0')) equal++;
+      }
+    }
+    const pctEqual = n ? 100 * equal / n : 0;
+    if (n >= 50 && pctEqual >= 95 && !opts.allowUnfiltered) {
+      throw new Error('export for ' + locationId + ' looks like ALL LOCATIONS: ' +
+        'CurrentStock == TotalStock on ' + pctEqual.toFixed(1) + '% of ' + n +
+        ' rows (expect 55-65%). Refusing.');
+    }
+    window.__SM_RAW = t;
+    return JSON.stringify({
+      location: locationId, applied: applied, status: r2.status,
+      rows: n, pctEqual: +pctEqual.toFixed(1), bytes: t.length
+    });
+  }
+
   // Render one chunk into the DOM for get_page_text. Returns its own sha so a
   // truncated read fails loudly instead of silently losing rows.
   //
@@ -175,6 +249,6 @@ window.__SM = (function () {
     return { text: ser(rows), changed, skipped };
   }
 
-  return { grab, emit, parseCsv, sha256, norm, CHUNK };
+  return { grab, grabTwoStep, emit, parseCsv, sha256, norm, CHUNK };
 })();
 'ready'

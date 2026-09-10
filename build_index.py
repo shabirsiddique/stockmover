@@ -142,6 +142,48 @@ def stock_map(rows, field="CurrentStock"):
     return out
 
 
+def assert_location_filtered(rows, label, allow=False):
+    """Hard-error if a Stock Levels export is really an ALL LOCATIONS export.
+
+    The Epos Now location filter silently resets to "All Locations" (seen on
+    the Stock Levels page 24 Aug, 26 Aug and again 10 Sep 2026). The resulting
+    CSV looks entirely normal - right columns, plausible numbers - but every
+    CurrentStock is the company-wide total, so the app credits one store with
+    the combined stock of both and sends staff hunting for items that are not
+    there. On 10 Sep this reached the build step and was caught only by hand.
+
+    The tell is exact: in an All-Locations export CurrentStock IS the total, so
+    CurrentStock == TotalStock on every row. In a genuine single-location
+    export the two differ wherever the other store also holds the line -
+    measured 10 Sep on real reduced exports: Nelson 56.5%, Colne 61.0% equal.
+    A 95% threshold sits far clear of both the honest case and the 100% a bad
+    export produces.
+
+    Covered by tests_location_filter.js (the browser-side twin of this check).
+    """
+    pairs = [(num(r.get("CurrentStock")), num(r.get("TotalStock")))
+             for r in rows if (r.get("Barcode") or "").strip()]
+    if not pairs:
+        return
+    equal = sum(1 for c, t in pairs if c == t)
+    pct = 100.0 * equal / len(pairs)
+    if len(pairs) < 50 or pct < 95.0:
+        return
+    msg = ("%s looks like an ALL LOCATIONS export, not a single-location one: "
+           "CurrentStock == TotalStock on %d of %d rows (%.1f%%). A genuine "
+           "location-filtered export runs 55-65%%; ~100%% means the location "
+           "filter reset and every figure is the company-wide total.\n"
+           "Re-export with the applied location verified server-side (read "
+           "ddlLocations back out of the form Epos Now returns, before posting "
+           "the export button - browser_export.js grabTwoStep does this), or "
+           "pass --allow-unfiltered-stock if you really do mean to build from "
+           "all-locations figures."
+           % (label, equal, len(pairs), pct))
+    if not allow:
+        raise SystemExit("error: " + msg)
+    print("WARNING (--allow-unfiltered-stock): " + msg, file=sys.stderr)
+
+
 def derive_colne_stock(nelson_rows):
     """Colne stock = TotalStock - CurrentStock, from the Nelson-filtered report."""
     out = {}
@@ -286,6 +328,9 @@ def main():
     ap.add_argument("--images", help="JSON: barcode -> Shopify image URL")
     ap.add_argument("--locations", help="JSON: barcode -> Nelson stockroom location")
     ap.add_argument("--out", help="Output path (defaults to --index, in place)")
+    ap.add_argument("--allow-unfiltered-stock", action="store_true",
+                    help="Permit a Stock Levels export whose location filter "
+                         "reset to All Locations. Almost never correct.")
     ap.add_argument("--allow-stale-sources", action="store_true",
                     help="Permit source CSVs older than the build date. Only for "
                          "deliberate replays; normally a stale source is a bug.")
@@ -347,6 +392,8 @@ def main():
     nelson_rows = []
     if args.nelson_stock:
         _, nelson_rows = read_csv(args.nelson_stock)
+        assert_location_filtered(nelson_rows, "Nelson stock levels (%s)"
+                                 % args.nelson_stock, args.allow_unfiltered_stock)
         nelson_map = stock_map(nelson_rows)
         # Keep only barcodes the forward direction can ask about. The full
         # report is ~7,500 rows; embedding all of it would bloat index.html by
@@ -383,6 +430,8 @@ def main():
     colne_map = None
     if args.colne_stock:
         _, colne_stock_rows = read_csv(args.colne_stock)
+        assert_location_filtered(colne_stock_rows, "Colne stock levels (%s)"
+                                 % args.colne_stock, args.allow_unfiltered_stock)
         colne_map = stock_map(colne_stock_rows)
         report.append("colne stock: exported")
     elif nelson_rows:
