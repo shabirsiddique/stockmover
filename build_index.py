@@ -285,6 +285,13 @@ def js_object(mapping, indent=False):
     return json.dumps(mapping, separators=(",", ":"), ensure_ascii=False)
 
 
+def existing_header(html, name):
+    """The '// ===== ... =====' comment line immediately above a block."""
+    m = re.search(r"//\s*=+\s*(EMBEDDED [^=]*?)\s*=+\s*\n\s*const\s+" + name,
+                  html)
+    return m.group(1).strip() if m else None
+
+
 def existing_block(html, name):
     """
     Pull an existing JS object literal back out, so it can be carried forward.
@@ -316,7 +323,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--index", default="index.html")
-    ap.add_argument("--colne-warn", required=True,
+    ap.add_argument("--colne-warn",
                     help="Stock Warnings export, Colne (location 32350)")
     ap.add_argument("--nelson-warn",
                     help="Stock Warnings export, Nelson (location 27417)")
@@ -328,6 +335,12 @@ def main():
     ap.add_argument("--images", help="JSON: barcode -> Shopify image URL")
     ap.add_argument("--locations", help="JSON: barcode -> Nelson stockroom location")
     ap.add_argument("--out", help="Output path (defaults to --index, in place)")
+    ap.add_argument("--images-only", action="store_true",
+                    help="Update IMAGE_MAP alone and leave BUILD_DATE/BUILD_STAMP "
+                         "untouched. For back-filling photos that already exist in "
+                         "Shopify: it changes no figure staff read, so it must not "
+                         "relabel the embedded data with a fresher timestamp. The "
+                         "photos reach phones on the next genuine data build.")
     ap.add_argument("--allow-unfiltered-stock", action="store_true",
                     help="Permit a Stock Levels export whose location filter "
                          "reset to All Locations. Almost never correct.")
@@ -335,6 +348,15 @@ def main():
                     help="Permit source CSVs older than the build date. Only for "
                          "deliberate replays; normally a stale source is a bug.")
     args = ap.parse_args()
+
+    if args.images_only:
+        if not args.images:
+            raise SystemExit("error: --images-only needs --images")
+        if any([args.colne_warn, args.nelson_warn, args.nelson_stock, args.colne_stock]):
+            raise SystemExit("error: --images-only updates IMAGE_MAP alone; do not "
+                             "pass warnings or stock exports with it.")
+    elif not args.colne_warn:
+        raise SystemExit("error: --colne-warn is required (or use --images-only)")
 
     html = open(args.index, encoding="utf-8").read()
     now = _dt.datetime.now()
@@ -371,6 +393,27 @@ def main():
     # BUILD_DATE carries date + time; see set_build_date().
     build_label = now.strftime("%-d %b %Y %H:%M")
     report = []
+
+    if args.images_only:
+        current = existing_block(html, "IMAGE_MAP")
+        new_images = json.load(open(args.images, encoding="utf-8"))
+        added = sum(1 for k in new_images if k not in current)
+        changed = sum(1 for k, v in new_images.items()
+                      if k in current and current[k] != v)
+        merged = {**current, **new_images}
+        # Header keeps the existing resolved-count wording: with no warnings
+        # export in hand there is no row count to measure against, and inventing
+        # one would make the header lie.
+        _hdr = existing_header(html, "IMAGE_MAP")
+        html = replace_block(html, "IMAGE_MAP", js_object(merged, indent=True),
+                             header=_hdr)
+        out_path = args.out or args.index
+        with open(out_path, "w", encoding="utf-8") as fh:
+            fh.write(html)
+        print("built %s | images-only | +%d new, %d updated, %d total | "
+              "constants deliberately unchanged"
+              % (out_path, added, changed, len(merged)))
+        return
 
     # --- forward: Colne warnings -------------------------------------------
     fields, colne_rows = read_csv(args.colne_warn)
