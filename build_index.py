@@ -205,14 +205,20 @@ def replace_block(html, name, literal, header=None):
     Replace `const <name> = ...;` with `literal`, optionally rewriting the
     `// ===== ... =====` comment directly above it.
 
-    Matches lazily up to the first `;` that ends the declaration. Raises if the
-    block is missing rather than appending — a missing block means the file is
+    Matches lazily up to the first `;` that ends the declaration. The end
+    pattern is `;[ \t]*\n`, NOT `;\s*\n`: `\s` matches newlines, so the greedy
+    version swallowed any BLANK LINE following the block while the replacement
+    wrote back only ";\n". LOCATION_MAP is the one block with a blank line after
+    it, so this only surfaced on 12 Sep 2026, the first build in weeks to pass
+    --locations. It shows up as a lone "-" in the non-data diff.
+
+    Raises if the block is missing rather than appending — a missing block means the file is
     not the shape we think it is, and silently adding one would produce a
     plausible-looking but wrong build.
     """
     pattern = re.compile(
         r"(?P<header>//\s*=====[^\n]*=====\n)?"
-        r"(?P<decl>const\s+%s\s*=\s*)(?P<body>.*?)(?P<end>;\s*\n)" % re.escape(name),
+        r"(?P<decl>const\s+%s\s*=\s*)(?P<body>.*?)(?P<end>;[ \t]*\n)" % re.escape(name),
         re.S,
     )
     match = pattern.search(html)

@@ -172,8 +172,16 @@ def main():
     check(counts['IMAGE_MAP'][1] >= counts['IMAGE_MAP'][0],
           'IMAGE_MAP >= previous (%d -> %d) -- it is cumulative, never filter it'
           % counts['IMAGE_MAP'])
-    check(counts['LOCATION_MAP'][1] == 2040,
-          'LOCATION_MAP == 2040 (got %d)' % counts['LOCATION_MAP'][1])
+    # Was a fixed == 2040. That fired as a FAILURE on 12 Sep 2026 when the user
+    # supplied 34 genuinely new stockroom locations - the map is meant to grow
+    # as barcodes get placed. A fixed number turns every legitimate addition
+    # into a manual waiver, which is how a check stops meaning anything. What
+    # it is really for is catching TRUNCATION, so measure it the way IMAGE_MAP
+    # is measured: never fewer than before.
+    _lo, _ln = counts['LOCATION_MAP']
+    check(_ln >= _lo,
+          'LOCATION_MAP >= previous (%d -> %d) -- it may grow, never shrink'
+          % (_lo, _ln))
 
     # 3. Stock-map coverage, measured on rows that COULD have matched.
     #
