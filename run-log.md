@@ -134,3 +134,12 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - 2026-09-14 08:59 — OK | rows: 173 | nelson: 173/173 (100%, reduced-report coverage — not comparable to a partial-report run) | images +0 (skipped, offer stands) | commit 395a24b | route: chunked-transport (no clicks, no mount needed for CSVs)
 
 - 2026-09-15 11:50 — OK | rows: 179 | nelson: 179/179 (100%, by-construction — reduced stock map) | images +0 | commit 41e5f87 | route: chunked-transport (no clicks, no mount for CSVs)
+
+## 15 Sep 2026 12:48 — OK (images-only, user-invoked)
+- IMAGE_MAP 833 -> 877 (+44, 0 updated) from the 15 Sep barcode-mapping pass. No stock data re-exported; all four data blocks carried forward from the 11:50 build (rows 179 / reverse 124 unchanged).
+- Source: 44 Epos Now barcodes matched to Shopify products BY NAME, not by barcode — none of the 54 sheet barcodes exist on any Shopify variant. 17 distinct photos cover the 44 barcodes. Mapping sheet: Drive id 1G6lxTCsFHZXUaJ4YrZwdCLolo2g5K9fQgCS0xhDkxP4.
+- All 17 image URLs probed for HTTP 200 before the build; none broken.
+- --images-only deliberately leaves the constants alone, so BUILD_STAMP/BUILD_DATE were bumped explicitly afterwards via bump_build_stamp()/set_build_date() — without that the phones never see an images-only build.
+- verify_build.py: all checks passed, non-data diff 0 lines.
+- Commit 7aec2d2. Pages run #204 completed/success. Live verified by no-store fetch: stamp 20260915-124838, IMAGE_MAP 877, five spot-checked barcodes present.
+- NOT done, by decision: overwriting Shopify variant barcodes. Variant barcode is a single field and most targets already hold a different Epos Now barcode (e.g. Blue Shirt twin pack variants hold 1000003715-3744 while the sheet carries 1000003755-3784), so writing would destroy the existing link rather than add one. Also unmappable at size level for the 19 blue shirts: Epos Now sizes by collar (11-18), Shopify by chest (20"-50").
