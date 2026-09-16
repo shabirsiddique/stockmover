@@ -184,3 +184,14 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - Checked end-to-end on the real deployed page, not just in a harness: loaded the live app, clicked through to the pick screen, confirmed the header reads "1 of 92" and the first item shows Nelson stock 3.
 - Commits 27e6096 (filter + tests) and 0c980a4 (button label). Stamp 20260916-112407. Live verified by no-store fetch.
 - NOTE for future data builds: forward row counts in this log are the RAW report rows (172 today). What staff see is the filtered count (92). Do not read a future drop in the visible count as data loss without checking the source rows first.
+
+## 16 Sep 2026 12:01 — OK (threshold raised to 2, plus fresh data)
+- User's second pass on the same rule: "where it shows 1 left in nelson dont show that either". Moving Nelson's last unit does not fix a shortage, it relocates it — so the test is not "has any" but "can spare one".
+- REPLACED the boolean hideZeroSource with `minSourceStock` (a number, or null to disable). Nelson>Colne = 2, Colne>Nelson = null. One number to tune, and the reverse can be switched on by replacing null. Boundary is >= minSourceStock, so exactly 2 is KEPT and exactly 1 is HIDDEN; both boundaries are asserted in tests_zero_stock_filter.js rather than left to inference, and a third case uses minSourceStock=3 to prove the threshold is not a hardcoded 2.
+- Unknown stock (barcode absent from the map, null) still shows, unchanged. Worth restating because it is the one case that fails silently: treating null as zero would drop rows wherever the stock report has a coverage gap and nothing would look wrong.
+- Effect on the 16 Sep data, raw forward rows -> shown: 172 -> 92 (zero rule, 11:24 build) -> 49 (this rule, same data). On the FRESH data in this build: 175 raw -> 53 shown. The 43-row cut at 11:24's data was entirely items with exactly 1 at Nelson.
+- Fresh exports: Colne warnings 175 (ck 3661674456), Nelson warnings 125 (ck 4033663230), Nelson stock 7414 -> 297 (ck 122627236), Colne stock 9087 -> 297 (ck 3989679135). Location guard: 27417 at 59.4%, 32350 at 61.4%, both in the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- verify_build.py passed with --allow-app-change (reason recorded in the commit). Both test suites green. node --check on the extracted app JS before deploying.
+- Checked on the DEPLOYED page, not just the harness: button reads "Use Nelson → Colne list (53 items, 16 Sep 2026 12:01)", clicking through gives "1 of 53", first item shows Nelson stock 3.
+- Commit 218cc79. Pages run #215 completed/success. Stamp 20260916-120128.
+- READ THIS BEFORE PANICKING AT A SHORT LIST: the run-log records RAW report rows. The visible count is much smaller and always will be — 175 raw / 53 visible here. A small visible number is the filter working, not data loss. Check the raw count and the Nelson stock distribution before investigating.
