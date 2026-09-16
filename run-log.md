@@ -195,3 +195,11 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - Checked on the DEPLOYED page, not just the harness: button reads "Use Nelson → Colne list (53 items, 16 Sep 2026 12:01)", clicking through gives "1 of 53", first item shows Nelson stock 3.
 - Commit 218cc79. Pages run #215 completed/success. Stamp 20260916-120128.
 - READ THIS BEFORE PANICKING AT A SHORT LIST: the run-log records RAW report rows. The visible count is much smaller and always will be — 175 raw / 53 visible here. A small visible number is the filter working, not data loss. Check the raw count and the Nelson stock distribution before investigating.
+
+## 16 Sep 2026 14:43 — OK (user-invoked, third build of the day)
+- Exports: Colne warnings 160 rows (ck 2970718807), Nelson warnings 117 (ck 1525421705), Nelson stock 7414 -> 276 barcodes (ck 2569103281), Colne stock 9087 -> 276 (ck 3421718550).
+- Location guard: 27417 applied, 59.3% equal; 32350 applied, 61.5%. Both inside the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- VISIBLE list is 36 items (160 raw, minSourceStock=2). Trajectory across today's three builds, raw -> shown: 172 -> 92 (zero rule), 175 -> 53, 160 -> 36. The visible number is falling faster than the raw because the raw list itself shrank AND the threshold moved; nothing is wrong. Confirmed on the deployed page: button "36 items", header "1 of 36", first item Air Supreme Backpack Grey D156.
+- IMAGE_MAP 906 -> 910 (+4): four of today's newly-appearing barcodes resolved on a plain Shopify lookup (ankle socks white x2 -> 3 Pairs Ankle Socks Cotton Rich Black & White, Fishermore FM T-Shirt 42/44 -> Fishermore PE T Shirt, Fishermore Tartan Skirt W40-L18 -> Fishermore Purple & Grey Tartan Skirt). Folded into the same build, not a second deploy.
+- Still unresolved among VISIBLE items: CPA Boys Blazer 33 Chest (5059467431723, no Shopify variant carries it — same EAN-not-in-Shopify pattern as the other CPA blazer sizes), Gola PE Gym Bag Green, Pendle Vale Tracksuit Bottoms 36/38 L, and the 4 black trainer socks.
+- verify_build.py: all checks passed, non-data diff 4 lines (2 header comments). Commit e499cd1. Pages run #217. Stamp 20260916-144330, live verified by no-store fetch before the API reported the run complete — content is the check that matters.
