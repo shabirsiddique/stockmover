@@ -217,3 +217,14 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - VERIFIED ON THE DEPLOYED PAGE, not in a harness: opened the live list view and parsed all 36 rows. Jumper 34" now reads "need 1 · Nelson 2". Draco-Red 3->1. St Andrew 5->2. Across all 36 rows the minimum left behind is exactly 1 and there are ZERO rows where need >= Nelson stock.
 - LESSON WORTH KEEPING: a guard on admission is not a guard on instruction. minSourceStock was written, tested and shipped as "never leave Nelson empty" and was believed to do that, while the number the human actually acts on went unchecked. When a rule is about an outcome in the real world, test the figure the person reads, not just the row's presence.
 - Commit 7f11f62. Stamp 20260916-150114. Pages run #219.
+
+## 17 Sep 2026 09:53 — OK (first build of the day, user-invoked)
+- Exports: Colne warnings 159 rows (ck 3704240371), Nelson warnings 117 (ck 1525421705), Nelson stock 7414 -> 275 barcodes (ck 940086569), Colne stock 9087 -> 275 (ck 4260892205).
+- Location guard: 27417 applied, 59.3% equal; 32350 applied, 61.5%. Both in the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- VISIBLE list 29 items (159 raw). First build carrying yesterday's quantity cap from the start.
+- Nelson warnings byte-identical to yesterday's 14:43 export again (ck 1525421705, 117 rows) — checked, not assumed: fresh POST this session, and Colne moved (160 -> 159) in the same pass. The reverse list simply has not changed since yesterday afternoon.
+- IMAGE_MAP 910 -> 915 (+5): ankle socks black, Barrowford Primary Cardigan x2 sizes, Plain Polo Shirt White 11-12, Black Shadow FB Shorts Adult Small. All resolved on a plain barcode lookup, folded into the same build.
+- Still unresolved among visible items: Gola PE Gym Bag Green, Pendle Vale Tracksuit Bottoms 36/38 L, and the 4 black trainer socks — all genuinely absent from Shopify, unchanged from previous runs.
+- verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
+- VERIFIED ON THE DEPLOYED PAGE: button "29 items, 17 Sep 2026 09:53", header "1 of 29", and all 29 rows parsed from the live list view — minimum left behind at Nelson is exactly 1, zero rows where the ask meets or exceeds stock. The cap is holding on real data, not just in tests.
+- Commit 0f8f2dd. Stamp 20260917-095353. Pages run #221.
