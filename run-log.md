@@ -228,3 +228,13 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
 - VERIFIED ON THE DEPLOYED PAGE: button "29 items, 17 Sep 2026 09:53", header "1 of 29", and all 29 rows parsed from the live list view — minimum left behind at Nelson is exactly 1, zero rows where the ask meets or exceeds stock. The cap is holding on real data, not just in tests.
 - Commit 0f8f2dd. Stamp 20260917-095353. Pages run #221.
+
+## 18 Sep 2026 11:12 — OK (user-invoked)
+- Exports: Colne warnings 173 rows (ck 2067884069), Nelson warnings 123 (ck 3376553033), Nelson stock 7414 -> 295 barcodes (ck 3767823371), Colne stock 9106 -> 295 (ck 2833554052).
+- Location guard: 27417 applied, 59.3% equal; 32350 applied, 61.7%. Both in the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- VISIBLE list 41 items (173 raw). Both lists moved after two days of a static Nelson export — Nelson warnings 117 -> 123, Colne 159 -> 173, and the Colne stock report grew 9087 -> 9106 rows, so this is a genuinely busier day rather than a repeat fetch.
+- IMAGE_MAP 915 -> 923 (+8): Barrowford Primary Sweatshirt, CPA Knitted Jumper 40, Lord Street Tartan Pinafore x2 sizes, Park High Boys Polo, Park High Girls Skorts, Pendle Vale Knitted Jumper 38, Barrowford Satchel Strap Bag. All plain barcode lookups, folded into the same build.
+- Still unresolved among visible items: Gola PE Gym Bag Green, Pendle Vale Tracksuit Bottoms 36/38 L, and the 4 black trainer socks — the same genuinely-absent-from-Shopify set as previous runs, unchanged.
+- verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
+- VERIFIED ON THE DEPLOYED PAGE: button "41 items, 18 Sep 2026 11:12", header "1 of 41", all 41 rows parsed from the live list view — minimum left behind at Nelson exactly 1, zero violations. Third consecutive day the cap has been checked against real data rather than assumed from tests.
+- Commit d19bf65. Stamp 20260918-111241. Pages run #223 (content was serving before the API left "waiting" — content check is the one that counts).
