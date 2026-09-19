@@ -249,3 +249,13 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
 - VERIFIED ON THE DEPLOYED PAGE: button "39 items, 19 Sep 2026 09:52", header "1 of 39", all 39 rows parsed — minimum left behind at Nelson exactly 1, zero violations. Fourth consecutive day checked against real data.
 - Commit bd8fa34. Stamp 20260919-095241. Pages run #225 completed/success.
+
+## 19 Sep 2026 15:37 — OK (final build of the day, user-invoked)
+- Exports: Colne warnings 185 rows (ck 3930675312), Nelson warnings 130 (ck 4008050032), Nelson stock 7413 -> 314 barcodes (ck 1041955422), Colne stock 9106 -> 314 (ck 1350472086).
+- Location guard: 27417 applied, 59.3% equal; 32350 applied, 61.7%. Both in the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- VISIBLE list 33 items (185 raw), down from 39 this morning even though the raw list grew 183 -> 185. That is the expected shape of a trading Saturday: Colne's shortages widen while Nelson's cover thins, so more rows qualify on need and fewer on sparable stock. Not a fault.
+- IMAGE_MAP 926 -> 929 (+3): Laneshawbridge Short Velcro Tie, Pendle Vale Waistless Adj Skirt 30W-18L, SJS/Trawden Tartan Skirt 9-10.
+- Unresolved set unchanged from this morning: Gola PE Gym Bag Green, Pendle Vale Girls Blazer 35", Pendle Vale Tracksuit Bottoms 36/38 L, 4 black trainer socks. (Pendle Vale College PE Top 28/30 dropped off the visible list on stock, not resolved — it will return.)
+- verify_build.py: all checks passed, non-data diff 4 lines (2 header comments). All three test suites pass.
+- VERIFIED ON THE DEPLOYED PAGE: button "33 items, 19 Sep 2026 15:37", header "1 of 33", all 33 rows parsed — minimum left behind at Nelson exactly 1, zero violations.
+- Commit 20c0b3e. Stamp 20260919-153744. Pages run #227 (content serving before the API cleared in_progress, as usual).
