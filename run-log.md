@@ -238,3 +238,14 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
 - VERIFIED ON THE DEPLOYED PAGE: button "41 items, 18 Sep 2026 11:12", header "1 of 41", all 41 rows parsed from the live list view — minimum left behind at Nelson exactly 1, zero violations. Third consecutive day the cap has been checked against real data rather than assumed from tests.
 - Commit d19bf65. Stamp 20260918-111241. Pages run #223 (content was serving before the API left "waiting" — content check is the one that counts).
+
+## 19 Sep 2026 09:52 — OK (user-invoked)
+- Exports: Colne warnings 183 rows (ck 670578678), Nelson warnings 125 (ck 2335546696), Nelson stock 7413 -> 307 barcodes (ck 4246183713), Colne stock 9106 -> 307 (ck 4093857815).
+- Location guard: 27417 applied, 59.4% equal; 32350 applied, 61.7%. Both in the honest band. 0 normalisation skips. Blob-download transport, all four byte-exact on first read.
+- VISIBLE list 39 items (183 raw). Colne warnings up again, 173 -> 183; Saturday trading.
+- IMAGE_MAP 923 -> 926 (+3): Fishermore Tartan Skirt W34-L16, Holy Saviour Primary PE T-Shirt 3-4, Pendle Vale Waistless Adj Skirt 28W-18L.
+- TWO NEW barcodes that do NOT resolve in Shopify, first seen today: Pendle Vale Girls Blazer 35" (5053181166732) and Pendle Vale College PE Top S/S 28/30 (1000009226). Same EAN-style pattern as the CPA blazers — the garment is almost certainly listed, but this barcode is not on any variant. Added to the standing unresolved set alongside Gola PE Gym Bag Green, Pendle Vale Tracksuit Bottoms 36/38 L and the 4 black trainer socks.
+- Note 1000008294 (Pendle Vale Waistless Adj Skirt 28W-18L) DID resolve, to Pendle Vale All Round Pleated Skirt — that is the same product whose L16 row is entirely unbarcoded and which caused the 1000001336 wrong-photo report on 15 Sep. The L18 row is barcoded correctly; only L16 is missing. Still worth fixing at source.
+- verify_build.py: all checks passed, non-data diff 6 lines (3 header comments). All three test suites pass.
+- VERIFIED ON THE DEPLOYED PAGE: button "39 items, 19 Sep 2026 09:52", header "1 of 39", all 39 rows parsed — minimum left behind at Nelson exactly 1, zero violations. Fourth consecutive day checked against real data.
+- Commit bd8fa34. Stamp 20260919-095241. Pages run #225 completed/success.
