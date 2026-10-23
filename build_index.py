@@ -560,6 +560,13 @@ def main():
     # only embeds it. Rows whose excess is not positive are dropped here as a
     # last guard, since an "extra to remove: 0" card is an instruction nobody
     # can action.
+    # Both overstock lists come from the same inventory fetch, so they travel
+    # together. Passing only one would carry the other block forward with stale
+    # rows under a fresh BUILD_DATE -- the mislabelling failure this script
+    # guards against everywhere else (23 Oct 2026).
+    if bool(args.overstock) != bool(args.overstock_rev):
+        raise SystemExit("error: pass --overstock AND --overstock-rev together (or neither). "
+                         "browser_inventory.js emits both as 'over' and 'overRev'.")
     for _arg, _block, _label in ((args.overstock, "OVERSTOCK_CSV", "Colne"),
                                  (args.overstock_rev, "OVERSTOCK_CSV_REV", "Nelson")):
         if not _arg:
