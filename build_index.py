@@ -81,7 +81,8 @@ def warnings_to_csv_text(rows, fieldnames):
     embedded blocks a sane size. Quoting is left to the csv module so product
     names containing commas or inch marks (e.g. 'FM Girls Blazer 34"') survive.
     """
-    numeric = {"CurrentStock", "MinStock", "MaxStock", "OnOrder", "Reorder"}
+    numeric = {"CurrentStock", "MinStock", "MaxStock", "OnOrder", "Reorder",
+               "SourceStock", "SourceMax"}
     out = []
     writer = csv.writer(out.append.__self__ if False else _LineSink(out),
                         lineterminator="\n")
@@ -338,6 +339,17 @@ def main():
     ap.add_argument("--colne-stock",
                     help="Stock Levels export filtered to Colne. Omit to derive "
                          "it from the Nelson report as TotalStock - CurrentStock.")
+    ap.add_argument("--nelson-stock-json",
+                    help="JSON barcode -> Nelson CurrentStock, from the Epos Now "
+                         "inventory API (api/v4/inventory/stocks?locationId=27417). "
+                         "Use instead of --nelson-stock.")
+    ap.add_argument("--colne-stock-json",
+                    help="JSON barcode -> Colne CurrentStock, from the inventory API "
+                         "(locationId=32350). Use instead of --colne-stock.")
+    ap.add_argument("--overstock",
+                    help="Overstock CSV (Colne above max): Name,Barcode,Category,Brand,"
+                         "Supplier,CurrentStock(=Nelson),SourceStock,SourceMax,DestMin,"
+                         "DestMax,Reorder(=excess). Omit to carry the block forward.")
     ap.add_argument("--images", help="JSON: barcode -> Shopify image URL")
     ap.add_argument("--locations", help="JSON: barcode -> Nelson stockroom location")
     ap.add_argument("--out", help="Output path (defaults to --index, in place)")
@@ -375,7 +387,10 @@ def main():
     # Nearly shipped exactly that on 2026-08-26 10:19 using 2026-08-25 17:39
     # exports. Compare each source file's mtime against the build date instead.
     _sources = [("--colne-warn", args.colne_warn), ("--nelson-warn", args.nelson_warn),
-                ("--nelson-stock", args.nelson_stock), ("--colne-stock", args.colne_stock)]
+                ("--nelson-stock", args.nelson_stock), ("--colne-stock", args.colne_stock),
+                ("--nelson-stock-json", args.nelson_stock_json),
+                ("--colne-stock-json", args.colne_stock_json),
+                ("--overstock", args.overstock)]
     _stale = []
     for _flag, _path in _sources:
         if not _path:
@@ -439,7 +454,27 @@ def main():
 
     # --- forward: Nelson stock ---------------------------------------------
     nelson_rows = []
-    if args.nelson_stock:
+    if args.nelson_stock and args.nelson_stock_json:
+        raise SystemExit("error: pass --nelson-stock OR --nelson-stock-json, not both")
+    if args.nelson_stock_json:
+        # API route (23 Oct 2026): the inventory API is queried per locationId,
+        # so the Stock Levels page's All-Locations reset cannot happen here and
+        # assert_location_filtered() does not apply. The map arrives already
+        # keyed to the list's barcodes.
+        nelson_map = {k: num(v) for k, v in
+                      json.load(open(args.nelson_stock_json, encoding="utf-8")).items()}
+        wanted_fwd = {(r.get("Barcode") or "").strip() for r in colne_rows}
+        nelson_map = {k: v for k, v in nelson_map.items() if k in wanted_fwd}
+        html = replace_block(
+            html, "NELSON_STOCK_MAP", js_object(nelson_map),
+            header="EMBEDDED NELSON STOCK MAP (barcode -> Current Stock at Nelson, "
+                   "from EPOSNow inventory API, %s)" % today,
+        )
+        covered = sum(1 for r in colne_rows
+                      if (r.get("Barcode") or "").strip() in nelson_map)
+        pct = 100.0 * covered / len(colne_rows) if colne_rows else 0.0
+        report.append("nelson: %d/%d (%.1f%%)" % (covered, len(colne_rows), pct))
+    elif args.nelson_stock:
         _, nelson_rows = read_csv(args.nelson_stock)
         assert_location_filtered(nelson_rows, "Nelson stock levels (%s)"
                                  % args.nelson_stock, args.allow_unfiltered_stock)
@@ -477,7 +512,11 @@ def main():
 
     # --- reverse: Colne stock ----------------------------------------------
     colne_map = None
-    if args.colne_stock:
+    if args.colne_stock_json:
+        colne_map = {k: num(v) for k, v in
+                     json.load(open(args.colne_stock_json, encoding="utf-8")).items()}
+        report.append("colne stock: inventory API")
+    elif args.colne_stock:
         _, colne_stock_rows = read_csv(args.colne_stock)
         assert_location_filtered(colne_stock_rows, "Colne stock levels (%s)"
                                  % args.colne_stock, args.allow_unfiltered_stock)
@@ -509,6 +548,29 @@ def main():
             wanted = {(r.get("Barcode") or "").strip() for r in rev_rows}
             colne_map = {k: v for k, v in colne_map.items() if k in wanted}
         html = replace_block(html, "SRC_STOCK_REV", js_object(colne_map))
+
+    # --- overstock: Colne above max -----------------------------------------
+    # Added 23 Oct 2026 at the user's request: a second section in the same app
+    # listing what Colne holds ABOVE its max, to take off the shelf and send to
+    # Nelson. The CSV is prepared upstream (see SKILL.md "Overstock"); this step
+    # only embeds it. Rows whose excess is not positive are dropped here as a
+    # last guard, since an "extra to remove: 0" card is an instruction nobody
+    # can action.
+    if args.overstock:
+        os_fields, os_rows = read_csv(args.overstock)
+        need = {"Name", "Barcode", "CurrentStock", "SourceStock", "SourceMax", "Reorder"}
+        missing = need - set(os_fields or [])
+        if missing:
+            raise SystemExit("error: --overstock is missing columns: %s" % ", ".join(sorted(missing)))
+        os_rows = [r for r in os_rows if num(r.get("Reorder")) > 0]
+        os_rows, _dropped_os = drop_service_lines(os_rows)
+        html = replace_block(
+            html, "OVERSTOCK_CSV",
+            js_template_literal(warnings_to_csv_text(os_rows, os_fields)),
+            header="EMBEDDED OVERSTOCK DATA (Colne above max stock, %d items, %s)"
+                   % (len(os_rows), today),
+        )
+        report.append("overstock: %d" % len(os_rows))
 
     # --- shared: location map ----------------------------------------------
     if args.locations:

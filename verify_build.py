@@ -14,7 +14,7 @@ extraction here is brace-matched, never regex-delimited.
 import argparse, csv, datetime, difflib, json, os, re, sys
 
 DICT_BLOCKS = ['IMAGE_MAP', 'LOCATION_MAP', 'NELSON_STOCK_MAP', 'SRC_STOCK_REV']
-CSV_BLOCKS = ['SAMPLE_CSV_REV', 'SAMPLE_CSV']  # longest name first: SAMPLE_CSV is a prefix
+CSV_BLOCKS = ['OVERSTOCK_CSV', 'SAMPLE_CSV_REV', 'SAMPLE_CSV']  # longest name first: SAMPLE_CSV is a prefix
 EXPECTED_HEADER_DIFFS = 3  # sample row count/date, images resolved, nelson stock map date
 
 fails = []
