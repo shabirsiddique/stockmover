@@ -92,20 +92,24 @@ window.__SMI = (function () {
       Math.max(n(p.MaximumStock), n(p.MinimumStock)) - n(p.CurrentStock)];
     const mapOther = (A, other) => { const m = {}; for (const p of A.filter(low)) { const o = other.get(p.ProductId); if (o) m[(p.Barcode || '').trim()] = n(o.CurrentStock); } return m; };
     const OH = ['Name', 'Barcode', 'Category', 'Brand', 'Supplier', 'CurrentStock', 'SourceStock', 'SourceMax', 'DestMin', 'DestMax', 'Reorder'];
-    const ov = C.filter(p => n(p.MaximumStock) > 0 && n(p.CurrentStock) > n(p.MaximumStock)).map(p => {
-      const o = Nid.get(p.ProductId);
+    // over(A, otherById): A's lines above their max, with the other shop's
+    // stock and (where it has a max) its min/max as the "required" figure.
+    const over = (A, Oid) => A.filter(p => n(p.MaximumStock) > 0 && n(p.CurrentStock) > n(p.MaximumStock)).map(p => {
+      const o = Oid.get(p.ProductId);
       const hasRange = o && n(o.MaximumStock) > 0;
       return [p.ProductName.trim(), (p.Barcode || '').trim(), p.CategoryName || '', p.BrandName || '', p.SupplierName || '',
         o ? n(o.CurrentStock) : '', n(p.CurrentStock), n(p.MaximumStock),
         hasRange ? n(o.MinimumStock) : '', hasRange ? n(o.MaximumStock) : '',
         n(p.CurrentStock) - n(p.MaximumStock)];
     });
+    const ov = over(C, Nid), ovRev = over(N, Cid);
     window.__OUT = {
       colneW: ser([H].concat(C.filter(low).map(row))),
       nelsonW: ser([H].concat(N.filter(low).map(row))),
       nelMap: JSON.stringify(mapOther(C, Nid)),
       colMap: JSON.stringify(mapOther(N, Cid)),
       over: ser([OH].concat(ov)),
+      overRev: ser([OH].concat(ovRev)),   // Nelson above max -> send to Colne (23 Oct 2026)
     };
     return JSON.stringify(Object.fromEntries(Object.entries(window.__OUT).map(([k, v]) => [k, [v.length, ck(v)]])));
   }
@@ -126,7 +130,8 @@ window.__SMI = (function () {
   function diffAgainst(MH) {
     const O = window.__OUT;
     const P = { colneW: MH ? diff(O.colneW, MH.colneW) : O.colneW, nelsonW: MH ? diff(O.nelsonW, MH.nelsonW) : O.nelsonW,
-      nelMap: O.nelMap, colMap: O.colMap, over: O.over };
+      nelMap: O.nelMap, colMap: O.colMap,
+      over: (MH && MH.over) ? diff(O.over, MH.over) : O.over, overRev: O.overRev };
     window.__ALL = JSON.stringify(P);
     return 'total ' + window.__ALL.length + ' ck ' + ck(window.__ALL) + ' chunks ' + Math.ceil(window.__ALL.length / 14000);
   }

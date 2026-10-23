@@ -350,6 +350,10 @@ def main():
                     help="Overstock CSV (Colne above max): Name,Barcode,Category,Brand,"
                          "Supplier,CurrentStock(=Nelson),SourceStock,SourceMax,DestMin,"
                          "DestMax,Reorder(=excess). Omit to carry the block forward.")
+    ap.add_argument("--overstock-rev",
+                    help="Overstock CSV for NELSON above max (send to Colne). Same "
+                         "columns as --overstock with the shops swapped: CurrentStock = "
+                         "Colne, SourceStock/SourceMax = Nelson, DestMin/DestMax = Colne.")
     ap.add_argument("--images", help="JSON: barcode -> Shopify image URL")
     ap.add_argument("--locations", help="JSON: barcode -> Nelson stockroom location")
     ap.add_argument("--out", help="Output path (defaults to --index, in place)")
@@ -390,7 +394,7 @@ def main():
                 ("--nelson-stock", args.nelson_stock), ("--colne-stock", args.colne_stock),
                 ("--nelson-stock-json", args.nelson_stock_json),
                 ("--colne-stock-json", args.colne_stock_json),
-                ("--overstock", args.overstock)]
+                ("--overstock", args.overstock), ("--overstock-rev", args.overstock_rev)]
     _stale = []
     for _flag, _path in _sources:
         if not _path:
@@ -556,21 +560,25 @@ def main():
     # only embeds it. Rows whose excess is not positive are dropped here as a
     # last guard, since an "extra to remove: 0" card is an instruction nobody
     # can action.
-    if args.overstock:
-        os_fields, os_rows = read_csv(args.overstock)
+    for _arg, _block, _label in ((args.overstock, "OVERSTOCK_CSV", "Colne"),
+                                 (args.overstock_rev, "OVERSTOCK_CSV_REV", "Nelson")):
+        if not _arg:
+            continue
+        os_fields, os_rows = read_csv(_arg)
         need = {"Name", "Barcode", "CurrentStock", "SourceStock", "SourceMax", "Reorder"}
         missing = need - set(os_fields or [])
         if missing:
-            raise SystemExit("error: --overstock is missing columns: %s" % ", ".join(sorted(missing)))
+            raise SystemExit("error: %s is missing columns: %s" % (_arg, ", ".join(sorted(missing))))
         os_rows = [r for r in os_rows if num(r.get("Reorder")) > 0]
         os_rows, _dropped_os = drop_service_lines(os_rows)
         html = replace_block(
-            html, "OVERSTOCK_CSV",
+            html, _block,
             js_template_literal(warnings_to_csv_text(os_rows, os_fields)),
-            header="EMBEDDED OVERSTOCK DATA (Colne above max stock, %d items, %s)"
-                   % (len(os_rows), today),
+            header="EMBEDDED %s (%s above max stock, %d items, %s)"
+                   % ("OVERSTOCK DATA" if _block == "OVERSTOCK_CSV" else "OVERSTOCK REV DATA",
+                      _label, len(os_rows), today),
         )
-        report.append("overstock: %d" % len(os_rows))
+        report.append("overstock %s: %d" % (_label.lower(), len(os_rows)))
 
     # --- shared: location map ----------------------------------------------
     if args.locations:
