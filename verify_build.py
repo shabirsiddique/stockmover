@@ -15,7 +15,10 @@ import argparse, csv, datetime, difflib, json, os, re, sys
 
 DICT_BLOCKS = ['IMAGE_MAP', 'LOCATION_MAP', 'NELSON_STOCK_MAP', 'SRC_STOCK_REV']
 CSV_BLOCKS = ['OVERSTOCK_CSV_REV', 'OVERSTOCK_CSV', 'SAMPLE_CSV_REV', 'SAMPLE_CSV']  # longest first: each _REV name has its base as a prefix  # longest name first: SAMPLE_CSV is a prefix
-EXPECTED_HEADER_DIFFS = 3  # sample row count/date, images resolved, nelson stock map date
+# Header comments that legitimately change on a data build: SAMPLE_CSV, IMAGE_MAP,
+# NELSON_STOCK_MAP, plus (since 23 Oct 2026) OVERSTOCK_CSV and OVERSTOCK_CSV_REV.
+# Was 3; the first build after Overstock shipped (27 Oct) diffed 5 headers / 10 lines.
+EXPECTED_HEADER_DIFFS = 5
 
 fails = []
 
