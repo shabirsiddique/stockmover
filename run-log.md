@@ -291,3 +291,5 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - 2026-11-17 14:15 — OK | rows: 252 | nelson: 251/252 (99.6%) | overstock: 229 Colne + 14 Nelson | photos: 3 (CPA green tie Y8 variant photo, Laneshawbridge zip top, CPA girls blazer 30) | commit 3365a94 | route: github-pages via cloud git push (user-invoked. Epos Now had signed Chrome out; user signed back in. First fetch call timed out in the tool but the data loaded; carried on from window.__INV. Baseline r15; 11,598-char payload, all six files FNV-verified.)
 
 - 2026-11-23 12:34 — 263 Colne / 147 Nelson / 219+14 overstock; 7 photos added (6 Shopify variant, 1 Epos Now); commit 46d646e; verify passed
+
+- 2026-11-25 11:24 — 256 Colne / 147 Nelson / 217+14 overstock; 20 photos added/fixed (Shopify variant photos incl. new pull-up trouser photos); commit 00c9fc4; verify passed
