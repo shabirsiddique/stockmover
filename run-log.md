@@ -295,3 +295,5 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - 2026-11-25 11:24 — 256 Colne / 147 Nelson / 217+14 overstock; 20 photos added/fixed (Shopify variant photos incl. new pull-up trouser photos); commit 00c9fc4; verify passed
 
 - 2026-11-28 09:33 — 275 Colne / 147 Nelson / 202+14 overstock; 13 photos added/fixed (Shopify variant photos); commit 5271b3a; verify passed
+
+- 2026-11-28 09:50 — photo corrections from user report (black pull-ups, FM black zip tops, FM zip & clip trouser, twin SS shirt, Peak Valley PV32 skirt photo removed, PV30 tassel photo); commit ba5365a
