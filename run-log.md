@@ -293,3 +293,5 @@ denominator. Harmless while the filter runs ahead of it, but worth tidying.
 - 2026-11-23 12:34 — 263 Colne / 147 Nelson / 219+14 overstock; 7 photos added (6 Shopify variant, 1 Epos Now); commit 46d646e; verify passed
 
 - 2026-11-25 11:24 — 256 Colne / 147 Nelson / 217+14 overstock; 20 photos added/fixed (Shopify variant photos incl. new pull-up trouser photos); commit 00c9fc4; verify passed
+
+- 2026-11-28 09:33 — 275 Colne / 147 Nelson / 202+14 overstock; 13 photos added/fixed (Shopify variant photos); commit 5271b3a; verify passed
